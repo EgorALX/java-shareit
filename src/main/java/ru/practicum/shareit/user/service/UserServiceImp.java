@@ -51,7 +51,7 @@ public class UserServiceImp implements UserService {
     @Override
     public List<UserDto> getUsers() {
         ArrayList<UserDto> list = new ArrayList<>();
-        for(User user : storage.getUsers()) {
+        for (User user : storage.getUsers()) {
             list.add(mapper.toUserDto(user));
         }
         return list;
