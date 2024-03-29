@@ -54,7 +54,6 @@ public class UserServiceImp implements UserService {
         for (User user : storage.getUsers()) {
             list.add(mapper.toUserDto(user));
         }
-
         return list;
     }
 }
