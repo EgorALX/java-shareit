@@ -28,7 +28,8 @@ public class ItemStorageImpl implements ItemStorage {
     }
 
     @Override
-    public Item updateItem(Long userId, Item item) {
+    public Item updateItem(Item item) {
+        Long userId = item.getOwner().getId();
         if (usersItems.containsKey(userId) && usersItems.get(userId).contains(item.getId())) {
             Item newItem = items.get(item.getId());
             if (item.getName() != null) {

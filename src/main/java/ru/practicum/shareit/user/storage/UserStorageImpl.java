@@ -13,12 +13,12 @@ public class UserStorageImpl implements UserStorage {
     private Long id = 1L;
     private final Map<Long, User> usersStorage = new HashMap<>();
 
+    private final Set<String> emailsStorage = new HashSet<>();
+
     @Override
     public User addUser(User user) {
-        for (User userInStorage : usersStorage.values()) {
-            if (user.getEmail().equals(userInStorage.getEmail())) {
-                throw new DuplicationException("Email already exist");
-            }
+        if (!emailsStorage.add(user.getEmail())) {
+            throw new DuplicationException("Email already exist");
         }
         Long id = setNewId();
         user.setId(id);
@@ -33,21 +33,18 @@ public class UserStorageImpl implements UserStorage {
     @Override
     public User updateUser(User user) {
         User oldUser = usersStorage.get(user.getId());
-        if (user.getEmail() != null) {
-            if (!user.getEmail().equals(oldUser.getEmail())) {
-                for (User userInStorage : usersStorage.values()) {
-                    if (user.getEmail().equals(userInStorage.getEmail())) {
-                        throw new DuplicationException("Email already exist");
-                    }
-                }
-                oldUser.setEmail(user.getEmail());
+        if (user.getEmail() != null && !user.getEmail().equals(oldUser.getEmail())) {
+            if (!emailsStorage.add(user.getEmail())) {
+                throw new DuplicationException("Email already exist");
             }
+            emailsStorage.remove(oldUser.getEmail());
+            oldUser.setEmail(user.getEmail());
         }
         if (user.getName() != null) {
             oldUser.setName(user.getName());
         }
-        usersStorage.put(id, oldUser);
-        return usersStorage.get(id);
+        usersStorage.put(user.getId(), oldUser);
+        return oldUser;
     }
 
     @Override
@@ -60,6 +57,8 @@ public class UserStorageImpl implements UserStorage {
 
     @Override
     public void removeById(Long id) {
+        User user = usersStorage.get(id);
+        emailsStorage.remove(user.getEmail());
         usersStorage.remove(id);
     }
 

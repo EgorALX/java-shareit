@@ -9,7 +9,7 @@ public interface ItemStorage {
 
     Item addItem(Item item);
 
-    Item updateItem(Long userId, Item item);
+    Item updateItem(Item item);
 
     Optional<Item> getById(Long id);
 

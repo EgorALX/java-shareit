@@ -42,7 +42,8 @@ public class ItemServiceImpl implements ItemService {
         }
         itemStorage.getById(item.getId()).orElseThrow(() -> new NotFoundException("Item " + item.getId() + " not found"));
         User user = userStorage.getById(item.getUserId()).orElseThrow(() -> new NotFoundException("User " + item.getUserId() + " not found"));
-        return itemMapper.toItemDto(itemStorage.updateItem(item.getUserId(), itemMapper.toItem(item, user)));
+        user.setId(item.getUserId());
+        return itemMapper.toItemDto(itemStorage.updateItem(itemMapper.toItem(item, user)));
     }
 
     @Override
