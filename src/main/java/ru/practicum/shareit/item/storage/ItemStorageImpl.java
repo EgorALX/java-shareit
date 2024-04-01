@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class ItemStorageImpl implements ItemStorage {
 
     private final Map<Long, Item> items = new HashMap<>();
-    private final Map<Long, Long> usersItems = new HashMap<>();
+    private final Map<Long, List<Long>> usersItems = new HashMap<>();
     private Long id = 1L;
 
     @Override
@@ -19,7 +19,7 @@ public class ItemStorageImpl implements ItemStorage {
         Long id = setNewId();
         item.setId(id);
         items.put(id, item);
-        usersItems.put(item.getOwner().getId(), item.getId());
+        usersItems.computeIfAbsent(item.getOwner().getId(), k -> new ArrayList<>()).add(item.getId());
         return items.get(id);
     }
 
@@ -29,8 +29,7 @@ public class ItemStorageImpl implements ItemStorage {
 
     @Override
     public Item updateItem(Long userId, Item item) {
-        if (usersItems.entrySet().stream()
-                .anyMatch(entry -> entry.getKey().equals(userId) && entry.getValue().equals(item.getId()))) {
+        if (usersItems.containsKey(userId) && usersItems.get(userId).contains(item.getId())) {
             Item newItem = items.get(item.getId());
             if (item.getName() != null) {
                 newItem.setName(item.getName());
@@ -57,15 +56,14 @@ public class ItemStorageImpl implements ItemStorage {
 
     @Override
     public void removeById(Long userId, Long itemId) {
-        usersItems.remove(userId, itemId);
+        usersItems.get(userId).remove(itemId);
         items.remove(itemId);
     }
 
     @Override
     public List<Item> getUsersItems(Long id) {
-        return usersItems.entrySet().stream()
-                .filter(entry -> id.equals(entry.getKey()))
-                .map(entry -> getById(entry.getValue()).orElseThrow(() -> new NotFoundException("User " + id + " not found")))
+        return usersItems.getOrDefault(id, Collections.emptyList()).stream()
+                .map(itemId -> getById(itemId).orElseThrow(() -> new NotFoundException("Item with id:" + itemId + " not found")))
                 .collect(Collectors.toList());
     }
 
