@@ -55,7 +55,8 @@ public class ItemStorageImpl implements ItemStorage {
     }
 
     @Override
-    public void removeById(Long userId, Long itemId) {
+    public void removeById(Long itemId) {
+        Long userId = items.get(itemId).getOwner().getId();
         usersItems.get(userId).remove(itemId);
         items.remove(itemId);
     }

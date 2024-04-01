@@ -55,7 +55,7 @@ public class ItemServiceImpl implements ItemService {
     public void removeById(Long userId, Long itemId) {
         itemStorage.getById(itemId).orElseThrow(() -> new NotFoundException("Item " + itemId + " not found"));
         userStorage.getById(userId).orElseThrow(() -> new NotFoundException("User " + userId + " not found"));
-        itemStorage.removeById(userId, itemId);
+        itemStorage.removeById(itemId);
     }
 
     @Override

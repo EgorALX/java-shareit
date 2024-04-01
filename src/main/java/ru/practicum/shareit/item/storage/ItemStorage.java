@@ -13,7 +13,7 @@ public interface ItemStorage {
 
     Optional<Item> getById(Long id);
 
-    void removeById(Long userId, Long id);
+    void removeById(Long id);
 
     List<Item> getUsersItems(Long id);
 
