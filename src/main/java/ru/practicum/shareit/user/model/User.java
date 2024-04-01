@@ -15,6 +15,5 @@ public class User {
 
     private String name;
 
-    @Email
     private String email;
 }

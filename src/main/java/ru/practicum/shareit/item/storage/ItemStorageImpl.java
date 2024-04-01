@@ -1,25 +1,25 @@
 package ru.practicum.shareit.item.storage;
 
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.exception.model.NotFoundException;
+import ru.practicum.shareit.item.model.Item;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
-public class ItemStorageImp implements ItemStorage {
+public class ItemStorageImpl implements ItemStorage {
 
-    private final Map<Long, ItemDto> items = new HashMap<>();
+    private final Map<Long, Item> items = new HashMap<>();
     private final Map<Long, Long> usersItems = new HashMap<>();
     private Long id = 1L;
 
     @Override
-    public ItemDto addItem(Long userId, ItemDto item) {
+    public Item addItem(Item item) {
         Long id = setNewId();
         item.setId(id);
         items.put(id, item);
-        usersItems.put(userId, item.getId());
+        usersItems.put(item.getOwner().getId(), item.getId());
         return items.get(id);
     }
 
@@ -28,10 +28,10 @@ public class ItemStorageImp implements ItemStorage {
     }
 
     @Override
-    public ItemDto updateItem(Long userId, Long itemId, ItemDto item) {
+    public Item updateItem(Long userId, Item item) {
         if (usersItems.entrySet().stream()
-                .anyMatch(entry -> entry.getKey().equals(userId) && entry.getValue().equals(itemId))) {
-            ItemDto newItem = items.get(itemId);
+                .anyMatch(entry -> entry.getKey().equals(userId) && entry.getValue().equals(item.getId()))) {
+            Item newItem = items.get(item.getId());
             if (item.getName() != null) {
                 newItem.setName(item.getName());
             }
@@ -43,14 +43,14 @@ public class ItemStorageImp implements ItemStorage {
             }
             return items.put(newItem.getId(), newItem);
         } else {
-            throw new NotFoundException();
+            throw new NotFoundException("User with id:" + userId + " or Item with id:" + item.getId() + " not found");
         }
     }
 
     @Override
-    public Optional<ItemDto> getById(Long id) {
+    public Optional<Item> getById(Long id) {
         if (!items.containsKey(id)) {
-            throw new NotFoundException();
+            throw new NotFoundException("Item with id:" + id + " not found");
         }
         return Optional.of(items.get(id));
     }
@@ -62,15 +62,15 @@ public class ItemStorageImp implements ItemStorage {
     }
 
     @Override
-    public List<ItemDto> getUsersItems(Long id) {
+    public List<Item> getUsersItems(Long id) {
         return usersItems.entrySet().stream()
                 .filter(entry -> id.equals(entry.getKey()))
-                .map(entry -> getById(entry.getValue()).orElseThrow(NotFoundException::new))
+                .map(entry -> getById(entry.getValue()).orElseThrow(() -> new NotFoundException("User " + id + " not found")))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ItemDto> search(String text) {
+    public List<Item> search(String text) {
         return items.values().stream()
                 .filter(itemDto -> !text.isBlank() &&
                         (itemDto.getName().toLowerCase().contains(text.toLowerCase()) ||

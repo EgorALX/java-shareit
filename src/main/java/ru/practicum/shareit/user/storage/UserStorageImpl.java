@@ -1,14 +1,14 @@
 package ru.practicum.shareit.user.storage;
 
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.exception.DuplicationException;
-import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.model.DuplicationException;
+import ru.practicum.shareit.exception.model.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.*;
 
 @Repository
-public class UserStorageImp implements UserStorage {
+public class UserStorageImpl implements UserStorage {
 
     private Long id = 1L;
     private final Map<Long, User> usersStorage = new HashMap<>();
@@ -31,8 +31,8 @@ public class UserStorageImp implements UserStorage {
     }
 
     @Override
-    public User updateUser(Long id, User user) {
-        User oldUser = usersStorage.get(id);
+    public User updateUser(User user) {
+        User oldUser = usersStorage.get(user.getId());
         if (user.getEmail() != null) {
             if (!user.getEmail().equals(oldUser.getEmail())) {
                 for (User userInStorage : usersStorage.values()) {
@@ -53,7 +53,7 @@ public class UserStorageImp implements UserStorage {
     @Override
     public Optional<User> getById(Long id) {
         if (id == null || !usersStorage.containsKey(id)) {
-            throw new NotFoundException();
+            throw new NotFoundException("User " + id + " not found");
         }
         return Optional.of(usersStorage.get(id));
     }
