@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.service.ItemService;
@@ -19,6 +20,7 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ItemDto addItem(@RequestHeader(USER_ID_HEADER) Long userId, @Valid @RequestBody ItemCreateDto item) {
         return itemService.addItem(userId, item);
     }
@@ -38,6 +40,7 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeById(@RequestHeader(USER_ID_HEADER) Long userId, @PathVariable Long itemId) {
         itemService.removeById(userId, itemId);
     }

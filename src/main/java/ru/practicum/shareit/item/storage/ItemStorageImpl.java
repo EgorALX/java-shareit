@@ -29,22 +29,7 @@ public class ItemStorageImpl implements ItemStorage {
 
     @Override
     public Item updateItem(Item item) {
-        Long userId = item.getOwner().getId();
-        if (usersItems.containsKey(userId) && usersItems.get(userId).contains(item.getId())) {
-            Item newItem = items.get(item.getId());
-            if (item.getName() != null) {
-                newItem.setName(item.getName());
-            }
-            if (item.getDescription() != null) {
-                newItem.setDescription(item.getDescription());
-            }
-            if (item.getAvailable() != null) {
-                newItem.setAvailable(item.getAvailable());
-            }
-            return items.put(newItem.getId(), newItem);
-        } else {
-            throw new NotFoundException("User with id:" + userId + " or Item with id:" + item.getId() + " not found");
-        }
+        return items.put(item.getId(), item);
     }
 
     @Override

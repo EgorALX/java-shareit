@@ -47,6 +47,7 @@ public class ErrorHandler {
         StringWriter error = new StringWriter();
         exception.printStackTrace(new PrintWriter(error));
         String message = "Exception: " + exception.getMessage() + " StackTrace: " + error.toString();
+        log.info(message);
         return new ErrorDto(message);
     }
 
