@@ -7,6 +7,7 @@ import ru.practicum.shareit.exception.model.NotFoundException;
 import ru.practicum.shareit.exception.model.ValidationException;
 import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserUpdateDto;
 import ru.practicum.shareit.user.mapping.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
@@ -26,7 +27,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto addUser(UserCreateDto user) {
         log.info("Adding user with email: {}", user.getEmail());
-        if (user == null || user.getEmail() == null) {
+        if (user.getEmail() == null) {
             throw new ValidationException("Data not valid");
         }
         User addedUser = storage.addUser(mapper.toUser(user));
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(Long id, UserCreateDto user) {
+    public UserDto updateUser(Long id, UserUpdateDto user) {
         log.info("Updating user with id: {}", id);
         if (user == null || id == null) {
             throw new NotFoundException("User or id not found");

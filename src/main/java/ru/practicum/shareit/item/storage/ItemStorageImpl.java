@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.storage;
 
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.exception.model.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.*;
@@ -11,7 +10,7 @@ import java.util.stream.Collectors;
 public class ItemStorageImpl implements ItemStorage {
 
     private final Map<Long, Item> items = new HashMap<>();
-    private final Map<Long, List<Long>> usersItems = new HashMap<>();
+    private final Map<Long, List<Item>> usersItems = new HashMap<>();
     private Long id = 1L;
 
     @Override
@@ -19,7 +18,7 @@ public class ItemStorageImpl implements ItemStorage {
         Long id = setNewId();
         item.setId(id);
         items.put(id, item);
-        usersItems.computeIfAbsent(item.getOwner().getId(), k -> new ArrayList<>()).add(item.getId());
+        usersItems.computeIfAbsent(item.getOwner().getId(), k -> new ArrayList<>()).add(item);
         return items.get(id);
     }
 
@@ -34,9 +33,6 @@ public class ItemStorageImpl implements ItemStorage {
 
     @Override
     public Optional<Item> getById(Long id) {
-        if (!items.containsKey(id)) {
-            throw new NotFoundException("Item with id:" + id + " not found");
-        }
         return Optional.of(items.get(id));
     }
 
@@ -49,9 +45,7 @@ public class ItemStorageImpl implements ItemStorage {
 
     @Override
     public List<Item> getUsersItems(Long id) {
-        return usersItems.getOrDefault(id, Collections.emptyList()).stream()
-                .map(itemId -> getById(itemId).orElseThrow(() -> new NotFoundException("Item with id:" + itemId + " not found")))
-                .collect(Collectors.toList());
+        return usersItems.getOrDefault(id, new ArrayList<>());
     }
 
     @Override

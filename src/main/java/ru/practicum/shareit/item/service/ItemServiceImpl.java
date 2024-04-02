@@ -29,8 +29,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto addItem(Long userId, ItemCreateDto itemCreateDto) {
         log.info("Adding item for user with id: {}", userId);
+        if (userId == null) {
+            throw new NotFoundException("user id not found");
+        }
         User owner = userStorage.getById(userId).orElseThrow(() -> new NotFoundException("User " + userId + " not found"));
-        Item item = itemMapper.toItem(itemCreateDto, itemCreateDto.getOwner());
+        Item item = itemMapper.toItem(itemCreateDto, owner);
         item.setOwner(owner);
         Item addedItem = itemStorage.addItem(item);
         log.info("Item added with id: {}", addedItem.getId());
@@ -40,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto updateItem(ItemCreateDto itemDto) {
         log.info("Updating item with id: {}", itemDto.getId());
-        if (itemDto == null || itemDto.getId() == null) {
+        if (itemDto.getId() == null) {
             throw new NotFoundException("Data not found");
         }
         Item item = itemStorage.getById(itemDto.getId())
@@ -48,7 +51,8 @@ public class ItemServiceImpl implements ItemService {
         User user = userStorage.getById(itemDto.getUserId())
                 .orElseThrow(() -> new NotFoundException("User " + itemDto.getUserId() + " not found"));
         if (!item.getOwner().getId().equals(user.getId())) {
-            throw new NotFoundException("User with id:" + user.getId() + " is not the owner of Item with id:" + item.getId());
+            throw new NotFoundException("User with id:" + user.getId()
+                    + " is not the owner of Item with id:" + item.getId());
         }
         if (itemDto.getName() != null) {
             item.setName(itemDto.getName());
