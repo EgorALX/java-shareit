@@ -38,11 +38,10 @@ public class UserStorageImpl implements UserStorage {
                 throw new DuplicationException("Email already exist");
             }
             emailsStorage.remove(oldUser.getEmail());
+
             oldUser.setEmail(user.getEmail());
         }
-        if (user.getName() != null) {
-            oldUser.setName(user.getName());
-        }
+        oldUser.setName(user.getName());
         usersStorage.put(user.getId(), oldUser);
         return oldUser;
     }

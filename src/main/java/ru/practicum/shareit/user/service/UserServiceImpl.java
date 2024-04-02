@@ -36,14 +36,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(Long id, UserUpdateDto user) {
+    public UserDto updateUser(Long id, UserUpdateDto userUpdateDto) {
         log.info("Updating user with id: {}", id);
-        if (user == null || id == null) {
+        if (userUpdateDto == null || id == null) {
             throw new NotFoundException("User or id not found");
         }
-        user.setId(id);
-        storage.getById(id).orElseThrow(() -> new NotFoundException("User " + id + " not found"));
-        User updatedUser = storage.updateUser(mapper.toUser(user));
+        userUpdateDto.setId(id);
+        User user = storage.getById(id).orElseThrow(() -> new NotFoundException("User " + id + " not found"));
+        if (userUpdateDto.getName() == null) {
+            userUpdateDto.setName(user.getName());
+        }
+        User updatedUser = storage.updateUser(mapper.toUser(userUpdateDto));
         log.info("User updated with id: {}", updatedUser.getId());
         return mapper.toUserDto(updatedUser);
     }
