@@ -23,18 +23,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto addUser(UserCreateDto user) {
-        if (user.getEmail() == null) {
-            throw new ValidationException("Data not valid");
-        }
         User addedUser = storage.addUser(mapper.toUser(user));
         return mapper.toUserDto(addedUser);
     }
 
     @Override
     public UserDto updateUser(Long id, UserUpdateDto userUpdateDto) {
-        if (userUpdateDto == null || id == null) {
-            throw new NotFoundException("User or id not found");
-        }
         userUpdateDto.setId(id);
         User user = storage.getById(id).orElseThrow(() -> new NotFoundException("User " + id + " not found"));
         if (userUpdateDto.getName() == null) {
@@ -52,7 +46,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void removeById(Long id) {
-        storage.getById(id).orElseThrow(() -> new NotFoundException("User " + id + " not found"));
         storage.removeById(id);
     }
 
