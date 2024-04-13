@@ -13,6 +13,7 @@ import ru.practicum.shareit.exception.model.ValidationException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
@@ -42,7 +43,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorDto handleException(final Exception exception) {
         StringWriter error = new StringWriter();
         exception.printStackTrace(new PrintWriter(error));
@@ -50,5 +51,4 @@ public class ErrorHandler {
         log.error("Exception: ", exception);
         return new ErrorDto(exception.getMessage(), error.toString());
     }
-
 }

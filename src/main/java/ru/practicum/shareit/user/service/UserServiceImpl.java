@@ -1,8 +1,13 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.exception.model.DuplicationException;
 import ru.practicum.shareit.exception.model.NotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserUpdateDto;
@@ -14,43 +19,49 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserStorage storage;
+
     private final UserMapper mapper;
 
     @Override
-    public UserDto addUser(UserCreateDto user) {
-        User addedUser = storage.addUser(mapper.toUser(user));
+    @Transactional
+    public UserDto addUser(UserCreateDto userCreateDto) {
+        User addedUser = storage.save(mapper.toUser(userCreateDto));
         return mapper.toUserDto(addedUser);
     }
 
     @Override
+    @Transactional
     public UserDto updateUser(Long id, UserUpdateDto userUpdateDto) {
-        userUpdateDto.setId(id);
-        User user = storage.getById(id).orElseThrow(() -> new NotFoundException("User " + id + " not found"));
-        if (userUpdateDto.getName() == null) {
-            userUpdateDto.setName(user.getName());
+        User newUser = storage.findById(id).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        if (userUpdateDto.getEmail() != null) {
+            newUser.setEmail(userUpdateDto.getEmail());
         }
-        User updatedUser = storage.updateUser(mapper.toUser(userUpdateDto));
-        return mapper.toUserDto(updatedUser);
+        if (userUpdateDto.getName() != null) {
+            newUser.setName(userUpdateDto.getName());
+        }
+        return mapper.toUserDto(newUser);
     }
 
     @Override
     public UserDto getById(Long id) {
-        User user = storage.getById(id).orElseThrow(() -> new NotFoundException("User " + id + " not found"));
+        User user = storage.findById(id).orElseThrow(() -> new NotFoundException("User " + id + " not found"));
         return mapper.toUserDto(user);
     }
 
     @Override
+    @Transactional
     public void removeById(Long id) {
-        storage.removeById(id);
+        storage.deleteById(id);
     }
 
     @Override
     public List<UserDto> getUsers() {
-        return storage.getUsers().stream()
+        return storage.findAll().stream()
                 .map(mapper::toUserDto)
                 .collect(Collectors.toList());
     }

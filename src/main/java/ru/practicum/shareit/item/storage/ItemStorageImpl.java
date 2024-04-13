@@ -7,13 +7,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
-public class ItemStorageImpl implements ItemStorage {
+public class ItemStorageImpl {
 
     private final Map<Long, Item> items = new HashMap<>();
     private final Map<Long, List<Item>> usersItems = new HashMap<>();
     private Long id = 1L;
 
-    @Override
     public Item addItem(Item item) {
         Long id = setNewId();
         item.setId(id);
@@ -26,29 +25,24 @@ public class ItemStorageImpl implements ItemStorage {
         return id++;
     }
 
-    @Override
     public Item updateItem(Item item) {
         return items.put(item.getId(), item);
     }
 
-    @Override
     public Optional<Item> getById(Long id) {
         return Optional.of(items.get(id));
     }
 
-    @Override
     public void removeById(Long itemId) {
         Long userId = items.get(itemId).getOwner().getId();
         usersItems.get(userId).remove(itemId);
         items.remove(itemId);
     }
 
-    @Override
     public List<Item> getUsersItems(Long id) {
         return usersItems.getOrDefault(id, new ArrayList<>());
     }
 
-    @Override
     public List<Item> search(String text) {
         return items.values().stream()
                 .filter(itemDto -> !text.isBlank() &&
