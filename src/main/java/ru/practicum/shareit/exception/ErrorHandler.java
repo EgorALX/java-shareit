@@ -9,13 +9,10 @@ import ru.practicum.shareit.exception.dto.ErrorDto;
 import ru.practicum.shareit.exception.model.DuplicationException;
 import ru.practicum.shareit.exception.model.NotFoundException;
 import ru.practicum.shareit.exception.model.ValidationException;
+import ru.practicum.shareit.exception.model.AccessException;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-
-@RestControllerAdvice
 @Slf4j
+@RestControllerAdvice
 public class ErrorHandler {
 
     @ExceptionHandler
@@ -23,6 +20,14 @@ public class ErrorHandler {
     public ErrorDto handleNotFoundException(final NotFoundException exception) {
         log.info("Данные не найдены {}", exception.getMessage());
         String message = "Данные не найдены " + exception.getMessage();
+        return new ErrorDto(message);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDto handleAccessException(final AccessException exception) {
+        log.info("Ошибка доступа {}", exception.getMessage());
+        String message = exception.getMessage();
         return new ErrorDto(message);
     }
 
@@ -42,13 +47,4 @@ public class ErrorHandler {
         return new ErrorDto(message);
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorDto handleException(final Exception exception) {
-        StringWriter error = new StringWriter();
-        exception.printStackTrace(new PrintWriter(error));
-        String message = "Exception: " + exception.getMessage() + " StackTrace: " + error.toString();
-        log.error("Exception: ", exception);
-        return new ErrorDto(exception.getMessage(), error.toString());
-    }
 }

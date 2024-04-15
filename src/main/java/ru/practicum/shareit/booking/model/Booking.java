@@ -22,10 +22,10 @@ public class Booking {
     private Long id;
 
     @Column(name = "start_date")
-    private LocalDateTime startDate;
+    private LocalDateTime start;
 
     @Column(name = "end_date")
-    private LocalDateTime endDate;
+    private LocalDateTime end;
 
     @ManyToOne
     @JoinColumn(name = "item_id")
@@ -38,9 +38,9 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    public Booking(Long id, LocalDateTime startDate, LocalDateTime endDate) {
+    public Booking(Long id, LocalDateTime start, LocalDateTime end) {
         this.id = id;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.start = start;
+        this.end = end;
     }
 }

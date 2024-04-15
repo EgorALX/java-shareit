@@ -13,7 +13,7 @@ public interface ItemService {
 
     ItemDto updateItem(ItemCreateDto item);
 
-    ItemDto getById(Long id);
+    ItemDto getById(Long userId, Long id);
 
     void removeById(Long userId, Long id);
 
@@ -21,5 +21,5 @@ public interface ItemService {
 
     List<ItemDto> search(String text);
 
-    CommentDto createComment(Long itemId, Long userId, CommentCreateDto comment) throws Exception;
+    CommentDto addComment(Long itemId, Long userId, CommentCreateDto comment);
 }

@@ -1,11 +1,7 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import ru.practicum.shareit.exception.model.DuplicationException;
 import ru.practicum.shareit.exception.model.NotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserCreateDto;
@@ -37,14 +33,14 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto updateUser(Long id, UserUpdateDto userUpdateDto) {
-        User newUser = storage.findById(id).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        User updatedUser = storage.findById(id).orElseThrow(() -> new NotFoundException("User " + id + " not found"));
         if (userUpdateDto.getEmail() != null) {
-            newUser.setEmail(userUpdateDto.getEmail());
+            updatedUser.setEmail(userUpdateDto.getEmail());
         }
         if (userUpdateDto.getName() != null) {
-            newUser.setName(userUpdateDto.getName());
+            updatedUser.setName(userUpdateDto.getName());
         }
-        return mapper.toUserDto(newUser);
+        return mapper.toUserDto(updatedUser);
     }
 
     @Override

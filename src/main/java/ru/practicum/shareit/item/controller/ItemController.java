@@ -47,7 +47,7 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemDto getById(@RequestHeader(USER_ID_HEADER) long userId, @PathVariable long itemId) {
         log.info("Getting item by id: {}", itemId);
-        ItemDto itemDto = itemService.getById(itemId);
+        ItemDto itemDto = itemService.getById(userId, itemId);
         log.info("Item found with id: {}", itemDto.getId());
         return itemDto;
     }
@@ -77,9 +77,9 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto createComment(@Valid @RequestBody CommentCreateDto comment,
-                                    @PathVariable Long itemId,
-                                    @RequestHeader("X-Sharer-User-Id") Long userId) throws Exception {
-        return itemService.createComment(itemId, userId, comment);
+    public CommentDto addComment(@Valid @RequestBody CommentCreateDto comment,
+                                 @PathVariable Long itemId,
+                                 @RequestHeader("X-Sharer-User-Id") Long userId) {
+        return itemService.addComment(itemId, userId, comment);
     }
 }

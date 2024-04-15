@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking.enums;
 
 public enum State {
-
     ALL,
     CURRENT,
     PAST,
@@ -9,5 +8,4 @@ public enum State {
     WAITING,
     REJECTED,
     UNSUPPORTED_STATUS
-
 }
