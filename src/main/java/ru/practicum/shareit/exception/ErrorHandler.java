@@ -1,6 +1,7 @@
 package ru.practicum.shareit.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -10,6 +11,9 @@ import ru.practicum.shareit.exception.model.DuplicationException;
 import ru.practicum.shareit.exception.model.NotFoundException;
 import ru.practicum.shareit.exception.model.ValidationException;
 import ru.practicum.shareit.exception.model.AccessException;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 @Slf4j
 @RestControllerAdvice
@@ -47,4 +51,21 @@ public class ErrorHandler {
         return new ErrorDto(message);
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorDto handleDataIntegrityViolationException(final DataIntegrityViolationException exception) {
+        log.info("Ошибка уникальности данных: {}", exception.getMessage());
+        String message = "DataIntegrityViolation error: " + exception.getMessage();
+        return new ErrorDto(message);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDto handleException(final Exception exception) {
+        StringWriter error = new StringWriter();
+        exception.printStackTrace(new PrintWriter(error));
+        String message = "Exception: " + exception.getMessage() + " StackTrace: " + error.toString();
+        log.error("Exception: ", exception);
+        return new ErrorDto(exception.getMessage(), error.toString());
+    }
 }
