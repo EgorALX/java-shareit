@@ -54,7 +54,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorDto handleDataIntegrityViolationException(final DataIntegrityViolationException exception) {
-        log.info("Ошибка уникальности данных: {}", exception.getMessage());
+        log.info("Ошибка уникальности: {}", exception.getMessage());
         String message = "DataIntegrityViolation error: " + exception.getMessage();
         return new ErrorDto(message);
     }
