@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS items (
     description VARCHAR NOT NULL,
     available BOOLEAN NOT NULL,
     owner_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    request_id BIGINT NOT NULL,
     CONSTRAINT primary_key_id_item PRIMARY KEY (id)
 );
 
