@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking.mapping;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
@@ -33,7 +32,7 @@ public class BookingMapper {
                 bookingDto.getEnd());
     }
 
-    public BookingForItem bookingForItemDto(Booking booking) {
+    public BookingForItem toBookingForItemDto(Booking booking) {
         if (booking != null) {
             return new BookingForItem(
                     booking.getId(),
