@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
 import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -164,7 +163,7 @@ public class ItemServiceImpl implements ItemService {
         text = text.toLowerCase();
         List<ItemDto> itemDtoList = new ArrayList<>();
         for (Item item : itemRepository
-                .findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailable(text, text, true)) {
+                .search(text, text, true)) {
             ItemDto itemDto = itemMapper.toItemDto(item);
             itemDtoList.add(itemDto);
         }
