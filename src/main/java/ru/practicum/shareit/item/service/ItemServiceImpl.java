@@ -152,8 +152,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public void removeById(Long userId, Long itemId) {
-        itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item " + itemId + " not found"));
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User " + userId + " not found"));
         itemRepository.deleteById(itemId);
     }
 
@@ -163,6 +161,7 @@ public class ItemServiceImpl implements ItemService {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
+        text = text.toLowerCase();
         List<ItemDto> itemDtoList = new ArrayList<>();
         for (Item item : itemRepository
                 .findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailable(text, text, true)) {
