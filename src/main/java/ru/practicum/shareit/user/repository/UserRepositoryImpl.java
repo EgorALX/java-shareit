@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user.storage;
+package ru.practicum.shareit.user.repository;
 
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.model.DuplicationException;
@@ -8,7 +8,7 @@ import ru.practicum.shareit.user.model.User;
 import java.util.*;
 
 @Repository
-public class UserStorageImpl {
+public class UserRepositoryImpl {
 
     private Long id = 1L;
     private final Map<Long, User> usersStorage = new HashMap<>();

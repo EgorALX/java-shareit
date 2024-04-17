@@ -53,7 +53,7 @@ public class BookingController {
     public List<BookingDto> getBooking(@RequestHeader(USER_ID_HEADER) Long userId,
                                        @RequestParam(defaultValue = "ALL") String state) {
         log.info("Getting bookings by owner for userId: {} with state: {}", userId, state);
-        List<BookingDto> result = bookingService.getBookingsByOwner(userId, State.valueOf(state));
+        List<BookingDto> result = bookingService.getBookingsByOwner(userId, state);
         log.info("Bookings retrieved successfully by owner for userId: {} with state: {}", userId, state);
         return result;
     }
@@ -62,7 +62,7 @@ public class BookingController {
     public List<BookingDto> getBookingsByUser(@RequestHeader(USER_ID_HEADER) Long userId,
                                               @RequestParam(defaultValue = "ALL") String state) {
         log.info("Getting bookings by user for userId: {} with state: {}", userId, state);
-        List<BookingDto> result = bookingService.getBookingsByUser(userId, State.valueOf(state));
+        List<BookingDto> result = bookingService.getBookingsByUser(userId, state);
         log.info("Bookings retrieved successfully by user for userId: {} with state: {}", userId, state);
         return result;
     }

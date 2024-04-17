@@ -1,19 +1,18 @@
 package ru.practicum.shareit.booking.model;
 
+import lombok.*;
 import ru.practicum.shareit.booking.enums.Status;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Getter
+@Setter
 @Table(name = "bookings")
 public class Booking {
 

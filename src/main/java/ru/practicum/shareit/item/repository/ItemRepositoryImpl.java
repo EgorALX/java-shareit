@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.storage;
+package ru.practicum.shareit.item.repository;
 
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
-public class ItemStorageImpl {
+public class ItemRepositoryImpl {
 
     private final Map<Long, Item> items = new HashMap<>();
     private final Map<Long, List<Item>> usersItems = new HashMap<>();

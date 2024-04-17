@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.storage;
+package ru.practicum.shareit.booking.repository;
 
 import ru.practicum.shareit.booking.enums.Status;
 import org.springframework.data.domain.Sort;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface BookingStorage extends JpaRepository<Booking, Long> {
+public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findAllByBooker(User booker, Sort sort);
 
@@ -37,9 +37,9 @@ public interface BookingStorage extends JpaRepository<Booking, Long> {
 
     List<Booking> findAllByItemOwnerAndStatusEquals(User owner, Status status, Sort sort);
 
-    Optional<Booking> findFirstByItemIdInAndStartLessThanEqualAndStatus(List<Long> idItems, LocalDateTime now,
+    Optional<Booking> findFirstByItemIdInAndStartLessThanEqualAndStatus(List<Long> itemIds, LocalDateTime now,
                                                                         Status approved, Sort sort);
 
-    Optional<Booking> findFirstByItemIdInAndStartAfterAndStatus(List<Long> idItems, LocalDateTime now,
+    Optional<Booking> findFirstByItemIdInAndStartAfterAndStatus(List<Long> itemIds, LocalDateTime now,
                                                                 Status approved, Sort sort);
 }
