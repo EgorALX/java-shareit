@@ -10,7 +10,6 @@ import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Stack;
 
 @Slf4j
 @RestController
