@@ -77,9 +77,9 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto addComment(@Valid @RequestBody CommentCreateDto comment,
-                                 @PathVariable Long itemId,
-                                 @RequestHeader("X-Sharer-User-Id") Long userId) {
+    public CommentDto addComment(@RequestHeader(USER_ID_HEADER) Long userId,
+                                 @Valid @RequestBody CommentCreateDto comment,
+                                 @PathVariable Long itemId) {
         return itemService.addComment(itemId, userId, comment);
     }
 }

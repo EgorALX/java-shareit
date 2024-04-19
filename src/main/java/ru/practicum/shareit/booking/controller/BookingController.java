@@ -5,10 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.enums.State;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Stack;
 
 @Slf4j
 @RestController
@@ -52,7 +54,7 @@ public class BookingController {
     public List<BookingDto> getBooking(@RequestHeader(USER_ID_HEADER) Long userId,
                                        @RequestParam(defaultValue = "ALL") String state) {
         log.info("Getting bookings by owner for userId: {} with state: {}", userId, state);
-        List<BookingDto> result = bookingService.getBookingsByOwner(userId, state);
+        List<BookingDto> result = bookingService.getBookingsByOwner(userId, State.convertStateStringToEnum(state));
         log.info("Bookings retrieved successfully by owner for userId: {} with state: {}", userId, state);
         return result;
     }
@@ -61,7 +63,7 @@ public class BookingController {
     public List<BookingDto> getBookingsByUser(@RequestHeader(USER_ID_HEADER) Long userId,
                                               @RequestParam(defaultValue = "ALL") String state) {
         log.info("Getting bookings by user for userId: {} with state: {}", userId, state);
-        List<BookingDto> result = bookingService.getBookingsByUser(userId, state);
+        List<BookingDto> result = bookingService.getBookingsByUser(userId, State.convertStateStringToEnum(state));
         log.info("Bookings retrieved successfully by user for userId: {} with state: {}", userId, state);
         return result;
     }
