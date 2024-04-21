@@ -113,7 +113,6 @@ public class ItemServiceImpl implements ItemService {
         ItemDto item = itemDtoList.get(0);
         item.setComments(commentRepository.getAllByItemId(id).stream().map(commentMapper::toCommentDto)
                 .collect(Collectors.toList()));
-
         return item;
     }
 
@@ -125,8 +124,6 @@ public class ItemServiceImpl implements ItemService {
         List<Booking> bookings = bookingRepository.findAllByItemInAndStatus(items, Status.APPROVED);
         Map<Long, List<Booking>> bookingsByItemId = bookings.stream()
                 .collect(Collectors.groupingBy(booking -> booking.getItem().getId()));
-        Map<Long, BookingForItem> lastBookings = new HashMap<>();
-        Map<Long, BookingForItem> nextBookings = new HashMap<>();
         List<Comment> allComments = commentRepository.findAllByItemIn(items);
         Map<Long, List<CommentDto>> commentsByItemId = allComments.stream()
                 .collect(Collectors.groupingBy(comment -> comment.getItem().getId()))
