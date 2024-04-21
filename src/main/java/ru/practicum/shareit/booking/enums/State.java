@@ -9,10 +9,11 @@ public enum State {
     REJECTED;
 
     public static State convertStateStringToEnum(String state) {
-        try {
-            return State.valueOf(state);
-        } catch (RuntimeException e) {
-            throw new IllegalArgumentException("Unknown state: " + state);
+        for (State s : State.values()) {
+            if(s.name().equalsIgnoreCase(state)){
+                return s;
+            }
         }
+        throw new IllegalArgumentException("Unknown state: " + state);
     }
 }

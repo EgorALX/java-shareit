@@ -21,9 +21,11 @@ import ru.practicum.shareit.exception.model.AccessException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.fasterxml.jackson.databind.type.LogicalType.Collection;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Service
@@ -115,7 +117,7 @@ public class BookingServiceImpl implements BookingService {
                 bookingList = bookingRepository.findAllByItemOwnerAndStatusEquals(user, Status.REJECTED, sort);
                 break;
             default:
-                return new ArrayList<>();
+                return Collections.emptyList();
         }
         return bookingList.stream().map(mapper::toBookingDto).collect(Collectors.toList());
     }
