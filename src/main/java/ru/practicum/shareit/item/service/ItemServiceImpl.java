@@ -117,7 +117,6 @@ public class ItemServiceImpl implements ItemService {
         return item;
     }
 
-
     @Override
     public List<ItemDto> getUsersItems(Long userId) {
         userRepository.findById(userId)
