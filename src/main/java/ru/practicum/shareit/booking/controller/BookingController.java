@@ -51,18 +51,23 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<BookingDto> getBooking(@RequestHeader(USER_ID_HEADER) Long userId,
-                                       @RequestParam(defaultValue = "ALL") String state) {
+                                       @RequestParam(defaultValue = "ALL") String state,
+                                       @RequestParam(defaultValue = "0") Integer from,
+                                       @RequestParam(defaultValue = "10") Integer size) {
         log.info("Getting bookings by owner for userId: {} with state: {}", userId, state);
-        List<BookingDto> result = bookingService.getBookingsByOwner(userId, State.convertStateStringToEnum(state));
+        List<BookingDto> result = bookingService.getBookingsByOwner(userId,
+                State.convertStateStringToEnum(state), from, size);
         log.info("Bookings retrieved successfully by owner for userId: {} with state: {}", userId, state);
         return result;
     }
 
     @GetMapping
     public List<BookingDto> getBookingsByUser(@RequestHeader(USER_ID_HEADER) Long userId,
-                                              @RequestParam(defaultValue = "ALL") String state) {
+                                              @RequestParam(defaultValue = "ALL") String state,
+                                              @RequestParam(defaultValue = "0") Integer from,
+                                              @RequestParam(defaultValue = "10") Integer size) {
         log.info("Getting bookings by user for userId: {} with state: {}", userId, state);
-        List<BookingDto> result = bookingService.getBookingsByUser(userId, State.convertStateStringToEnum(state));
+        List<BookingDto> result = bookingService.getBookingsByUser(userId, State.convertStateStringToEnum(state), from, size);
         log.info("Bookings retrieved successfully by user for userId: {} with state: {}", userId, state);
         return result;
     }

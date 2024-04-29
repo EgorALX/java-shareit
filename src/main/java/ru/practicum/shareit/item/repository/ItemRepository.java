@@ -1,10 +1,13 @@
 package ru.practicum.shareit.item.repository;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.item.model.Item;
 
+import java.util.Arrays;
 import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
@@ -17,4 +20,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "i.available = :available")
     List<Item> search(@Param("name") String name, @Param("description") String description,
                       @Param("available") Boolean available);
+
+    List<Item> getItemsByRequestId(Long requestId, Sort sort);
 }

@@ -13,10 +13,11 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemRequestDto {
+public class ItemRequestCreateDto {
 
     private Long id;
 
+    @NotNull
     private String description;
 
     private UserDto requester;

@@ -61,17 +61,21 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getUsersItems(@RequestHeader(USER_ID_HEADER) Long userId) {
+    public List<ItemDto> getUsersItems(@RequestHeader(USER_ID_HEADER) Long userId,
+                                       @RequestParam(defaultValue = "0") Integer from,
+                                       @RequestParam(required = false) Integer size) {
         log.info("Getting items for user with id: {}", userId);
-        List<ItemDto> itemDtos = itemService.getUsersItems(userId);
+        List<ItemDto> itemDtos = itemService.getUsersItems(userId, from, size);
         log.info("Found {} items for user with id: {}", itemDtos.size(), userId);
         return itemDtos;
     }
 
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestParam String text) {
+    public List<ItemDto> search(@RequestParam String text,
+                                @RequestParam(defaultValue = "0") Integer from,
+                                @RequestParam(required = false) Integer size) {
         log.info("Searching items with text: {}", text);
-        List<ItemDto> itemDtos = itemService.search(text);
+        List<ItemDto> itemDtos = itemService.search(text, from, size);
         log.info("Found {} items matching the search text", itemDtos.size());
         return itemDtos;
     }
