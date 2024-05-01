@@ -86,6 +86,60 @@ public class BookingServiceTest {
     }
 
     @Test
+    void itemsAvailableIncorrect() {
+        BookingCreateDto booking = new BookingCreateDto(1L,
+                LocalDateTime.of(2023, 12, 12, 12, 12, 0),
+                LocalDateTime.of(2024, 1, 12, 12, 12, 0),
+                999L);
+
+        when(itemRepository.findById(any())).thenReturn
+                (Optional.of(new Item(1L, null, null, false, null, new User())));
+
+        assertThrows(AccessException.class,
+                () -> bookingService.create(user1.getId(), booking));
+    }
+
+    @Test
+    void itemThrowNotFound() {
+        BookingCreateDto booking = new BookingCreateDto(1L,
+                LocalDateTime.of(2023, 12, 12, 12, 12, 0),
+                LocalDateTime.of(2024, 1, 12, 12, 12, 0),
+                999L);
+
+        when(itemRepository.findById(any())).thenReturn
+                (Optional.of(new Item(1L, null, null, true, null, new User())));
+
+        assertThrows(NotFoundException.class,
+                () -> bookingService.create(1000L, booking));
+    }
+
+
+
+    @Test
+    void createAvailableIsFalseTest() {
+        item1.setAvailable(false);
+        BookingCreateDto booking = new BookingCreateDto(1L,
+                LocalDateTime.of(2023, 12, 12, 12, 12, 0),
+                LocalDateTime.of(2024, 1, 12, 12, 12, 0),
+                item1.getId());
+
+        assertThrows(NotFoundException.class,
+                () -> bookingService.create(user1.getId(), booking));
+    }
+
+    @Test
+    void createOwnerIsBookingTest() {
+        Item item = new Item(1L, "item", "it", false, user2, null);
+        BookingCreateDto thisBooking = new BookingCreateDto(1L,
+                LocalDateTime.of(2023, 12, 12, 12, 12, 0),
+                LocalDateTime.of(2024, 1, 12, 12, 12, 0),
+                item.getId());
+
+        assertThrows(NotFoundException.class,
+                () -> bookingService.create(user2.getId(), thisBooking));
+    }
+
+    @Test
     public void testCreateBooking() {
         Long userId = 1L;
         BookingCreateDto bookingCreateDto = new BookingCreateDto();

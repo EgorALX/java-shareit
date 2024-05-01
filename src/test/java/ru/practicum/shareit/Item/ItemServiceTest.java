@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +26,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapping.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.model.User;
@@ -133,6 +135,12 @@ public class ItemServiceTest {
     }
 
     @Test
+    void createNullUserId() {
+        assertThrows(NotFoundException.class,
+                () -> itemService.addItem(null, new ItemCreateDto()));
+    }
+
+    @Test
     @Transactional
     void updateItemTest() {
         Item existingItem = new Item();
@@ -229,6 +237,51 @@ public class ItemServiceTest {
         assertEquals(itemDto, result.get(0));
         verify(itemRepository, times(1)).search("test", "test", true);
         verify(itemMapper, times(1)).toItemDto(item);
+    }
+
+    @Test
+    void testSearchWithBlankText() {
+        String text = "   ";
+        Integer from = 0;
+        Integer size = 10;
+        when(itemRepository.search(text, text, true)).thenReturn(new ArrayList<>());
+
+        List<ItemDto> result = itemService.search(text, from, size);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void addComment_success() {
+        // Подготовка данных
+        Long userId = 1L;
+        Long itemId = 2L;
+        CommentCreateDto commentCreateDto = new CommentCreateDto();
+        User user = new User();
+        Item item = new Item();
+        Comment comment = new Comment();
+        CommentDto commentDto = new CommentDto();
+
+        // Настройка моков
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
+        when(commentMapper.toComment(commentCreateDto)).thenReturn(comment);
+        when(commentRepository.save(any(Comment.class))).thenReturn(comment);
+        when(commentMapper.toCommentDto(comment)).thenReturn(commentDto);
+        List<Booking> bookings = new ArrayList<>();
+        bookings.add(new Booking());
+        when(bookingRepository.findAllByBookerIdAndItemIdAndStatusEqualsAndEndIsBefore(
+                any(), any(), any(), any())).thenReturn(bookings);
+
+        // Вызов метода
+        CommentDto result = itemService.addComment(itemId, userId, commentCreateDto);
+
+        // Проверка результата
+        assertEquals(commentDto, result);
+        verify(userRepository).findById(userId);
+        verify(itemRepository).findById(itemId);
+        verify(commentMapper).toComment(commentCreateDto);
+        verify(commentRepository).save(any(Comment.class));
+        verify(commentMapper).toCommentDto(comment);
     }
 
     @Test
