@@ -22,6 +22,6 @@ public class BookingRepositoryTest {
     @Test
     void getById_shouldThrowExceptionIfWrongId() {
         assertThrows(NotFoundException.class,
-                () -> bookingService.getById(999L, 1L));
+                () -> bookingService.getById(500L, 1L));
     }
 }
