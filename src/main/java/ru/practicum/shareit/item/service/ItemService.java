@@ -5,7 +5,6 @@ import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 public interface ItemService {

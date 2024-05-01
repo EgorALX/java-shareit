@@ -34,6 +34,6 @@ public class ItemDto {
         this.name = name;
         this.description = description;
         this.available = available;
-        this.requestId =requestId;
+        this.requestId = requestId;
     }
 }
