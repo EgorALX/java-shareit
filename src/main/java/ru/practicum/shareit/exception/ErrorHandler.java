@@ -38,7 +38,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDto handleValidationException(final ValidationException exception) {
-        log.info("Ошибка валидации {}", exception.getMessage());
+        log.info("Validation error: {}", exception.getMessage());
         String message = "Validation error: " + exception.getMessage();
         return new ErrorDto(message);
     }
