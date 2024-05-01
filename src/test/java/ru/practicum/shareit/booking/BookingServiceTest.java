@@ -57,7 +57,8 @@ public class BookingServiceTest {
     private final User user1 = new User(1L, "User1", "user1@example.com");
     private final User user2 = new User(2L, "User2", "user2@example.com");
     private final Item item1 = new Item(1L, "Item1", "Description1", true, user1, null);
-    private final Booking booking = new Booking(1L, LocalDateTime.now(), LocalDateTime.now().plusHours(1), item1, user1, Status.WAITING);
+    private final Booking booking = new Booking(1L, LocalDateTime.now(),
+            LocalDateTime.now().plusHours(1), item1, user1, Status.WAITING);
 
     @BeforeEach
     void setUp() {
@@ -92,8 +93,8 @@ public class BookingServiceTest {
                 LocalDateTime.of(2024, 1, 12, 12, 12, 0),
                 999L);
 
-        when(itemRepository.findById(any())).thenReturn
-                (Optional.of(new Item(1L, null, null, false, null, new User())));
+        when(itemRepository.findById(any())).thenReturn(Optional.of(new Item(1L,
+                null, null, false, null, new User())));
 
         assertThrows(AccessException.class,
                 () -> bookingService.create(user1.getId(), booking));
@@ -106,8 +107,8 @@ public class BookingServiceTest {
                 LocalDateTime.of(2024, 1, 12, 12, 12, 0),
                 999L);
 
-        when(itemRepository.findById(any())).thenReturn
-                (Optional.of(new Item(1L, null, null, true, null, new User())));
+        when(itemRepository.findById(any())).thenReturn(Optional.of(new Item(1L,
+                null, null, true, null, new User())));
 
         assertThrows(NotFoundException.class,
                 () -> bookingService.create(1000L, booking));
