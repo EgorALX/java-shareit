@@ -98,21 +98,23 @@ public class ItemServiceImpl implements ItemService {
                 () -> new NotFoundException("Предмет " + id + " не найден"));
         List<ItemDto> itemDtoList = Collections.singletonList(itemMapper.toItemDto(neededItem));
         if (neededItem.getOwner().getId().equals(userId)) {
-            BookingForItem lastBooking = bookingRepository
+            BookingForItem lastBooking = null;
+            Booking lastBookingObject = bookingRepository
                     .findFirstByItemIdInAndStartLessThanEqualAndStatus(
                             Collections.singletonList(id), LocalDateTime.now(),
                             Status.APPROVED, Sort.by(DESC, "start"))
-                    .stream()
-                    .map(bookingMapper::toBookingForItemDto)
-                    .findFirst()
                     .orElse(null);
-            BookingForItem nextBooking = bookingRepository.findFirstByItemIdInAndStartAfterAndStatus(
+            if (lastBookingObject != null) {
+                lastBooking = bookingMapper.toBookingForItemDto(lastBookingObject);
+            }
+            BookingForItem nextBooking = null;
+            Booking nextBookingObject = bookingRepository.findFirstByItemIdInAndStartAfterAndStatus(
                             Collections.singletonList(id), LocalDateTime.now(), Status.APPROVED,
                             Sort.by(ASC, "start"))
-                    .stream()
-                    .map(bookingMapper::toBookingForItemDto)
-                    .findFirst()
                     .orElse(null);
+            if (nextBookingObject != null) {
+                nextBooking = bookingMapper.toBookingForItemDto(nextBookingObject);
+            }
             ItemDto itemDto = itemDtoList.get(0);
             itemDto.setLastBooking(lastBooking);
             itemDto.setNextBooking(nextBooking);
@@ -157,7 +159,7 @@ public class ItemServiceImpl implements ItemService {
                     .min(Comparator.comparing(Booking::getStart))
                     .orElse(null);
             ItemDto itemDto = itemMapper.toItemDto(item);
-            if (lastBooking != null) {
+            if (bookingMapper != null && lastBooking != null) {
                 itemDto.setLastBooking(bookingMapper.toBookingForItemDto(lastBooking));
             }
             if (nextBooking != null) {

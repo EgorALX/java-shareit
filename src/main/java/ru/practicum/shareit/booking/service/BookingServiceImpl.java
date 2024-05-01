@@ -40,9 +40,7 @@ public class BookingServiceImpl implements BookingService {
 
     private final ItemRepository itemRepository;
 
-    private final BookingMapper mapper;
-
-    private static final Sort sort = Sort.by(DESC, "start");
+    private final BookingMapper bookingMapper;
 
     @Override
     @Transactional
@@ -57,11 +55,11 @@ public class BookingServiceImpl implements BookingService {
         if (item.getOwner().getId().equals(userId)) {
             throw new NotFoundException("Data not found");
         }
-        Booking newBooking = mapper.toBooking(bookingCreateDto);
+        Booking newBooking = bookingMapper.toBooking(bookingCreateDto);
         newBooking.setItem(item);
         newBooking.setBooker(user);
         newBooking.setStatus(Status.WAITING);
-        return mapper.toBookingDto(bookingRepository.save(newBooking));
+        return bookingMapper.toBookingDto(bookingRepository.save(newBooking));
     }
 
     @Transactional
@@ -80,7 +78,7 @@ public class BookingServiceImpl implements BookingService {
         } else {
             updatedBooking.setStatus(Status.REJECTED);
         }
-        return mapper.toBookingDto(updatedBooking);
+        return bookingMapper.toBookingDto(updatedBooking);
     }
 
     @Override
@@ -90,14 +88,14 @@ public class BookingServiceImpl implements BookingService {
         if (!userId.equals(booking.getBooker().getId()) && !userId.equals(booking.getItem().getOwner().getId())) {
             throw new NotFoundException("Invalid request");
         }
-        return mapper.toBookingDto(booking);
+        return bookingMapper.toBookingDto(booking);
     }
 
     @Override
     public List<BookingDto> getBookingsByOwner(Long userId, State state, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size, Sort.by(DESC, "start"));
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+                .orElseThrow(() -> new NotFoundException("User " + userId + " not found"));
         Page<Booking> bookingPage;
         switch (state) {
             case ALL:
@@ -122,7 +120,7 @@ public class BookingServiceImpl implements BookingService {
             default:
                 throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
         }
-        return bookingPage.getContent().stream().map(mapper::toBookingDto).collect(Collectors.toList());
+        return bookingPage.getContent().stream().map(bookingMapper::toBookingDto).collect(Collectors.toList());
     }
 
     @Override
@@ -137,7 +135,7 @@ public class BookingServiceImpl implements BookingService {
         while (currentPage < totalPages) {
             Pageable page = PageRequest.of(currentPage, pagination.getPageSize(), sort);
             Page<Booking> bookingPage = getPages(state, user, page);
-            list.addAll(bookingPage.getContent().stream().map(mapper::toBookingDto).collect(Collectors.toList()));
+            list.addAll(bookingPage.getContent().stream().map(bookingMapper::toBookingDto).collect(Collectors.toList()));
             currentPage++;
             if (!bookingPage.hasNext()) {
                 break;

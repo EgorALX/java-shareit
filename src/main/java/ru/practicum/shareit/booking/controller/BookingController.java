@@ -50,10 +50,10 @@ public class BookingController {
     }
 
     @GetMapping("/owner")
-    public List<BookingDto> getBooking(@RequestHeader(USER_ID_HEADER) Long userId,
-                                       @RequestParam(defaultValue = "ALL") String state,
-                                       @RequestParam(defaultValue = "0") Integer from,
-                                       @RequestParam(defaultValue = "10") Integer size) {
+    public List<BookingDto> getBookingByOwner(@RequestHeader(USER_ID_HEADER) Long userId,
+                                              @RequestParam(defaultValue = "ALL") String state,
+                                              @RequestParam(defaultValue = "0") Integer from,
+                                              @RequestParam(defaultValue = "10") Integer size) {
         log.info("Getting bookings by owner for userId: {} with state: {}", userId, state);
         List<BookingDto> result = bookingService.getBookingsByOwner(userId,
                 State.convertStateStringToEnum(state), from, size);
