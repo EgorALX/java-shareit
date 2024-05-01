@@ -114,7 +114,6 @@ public class BookingServiceTest {
     }
 
 
-
     @Test
     void createAvailableIsFalseTest() {
         item1.setAvailable(false);
