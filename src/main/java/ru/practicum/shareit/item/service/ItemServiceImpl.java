@@ -92,7 +92,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto getById(Long userId, Long id) {
         Item neededItem = itemRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Предмет " + id + " не найден"));
+                () -> new NotFoundException("Item " + id + " not found"));
         List<ItemDto> itemDtoList = Collections.singletonList(itemMapper.toItemDto(neededItem));
         if (neededItem.getOwner().getId().equals(userId)) {
             BookingForItem lastBooking = null;
