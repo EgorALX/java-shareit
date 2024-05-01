@@ -18,7 +18,9 @@ import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.comment.mapper.CommentMapper;
 import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.comment.repository.CommentRepository;
+import ru.practicum.shareit.exception.model.AccessException;
 import ru.practicum.shareit.exception.model.NotFoundException;
+import ru.practicum.shareit.exception.model.ValidationException;
 import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapping.ItemMapper;
@@ -26,6 +28,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.user.dto.UserCreateDto;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
@@ -254,4 +257,35 @@ public class ItemServiceTest {
                 () -> itemService.updateItem(itemCreateDto));
     }
 
+    @Test
+    void addCommentThrowsAccessExceptionTest() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
+        when(commentMapper.toComment(commentCreateDto)).thenReturn(new Comment());
+        when(commentRepository.save(any(Comment.class))).thenThrow(new AccessException("Access error"));
+
+        assertThrows(AccessException.class, () -> itemService.addComment(1L, 1L, commentCreateDto));
+
+        verify(userRepository, times(1)).findById(1L);
+        verify(itemRepository, times(1)).findById(1L);
+    }
+
+
+    @Test
+    void addCommentAccessExceptionTest() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
+        when(bookingRepository.findAllByBookerIdAndItemIdAndStatusEqualsAndEndIsBefore(
+                1L, 1L, Status.APPROVED, LocalDateTime.now())).thenReturn(Collections.emptyList());
+
+        assertThrows(AccessException.class, () -> itemService.addComment(1L, 1L, commentCreateDto));
+    }
+
+    @Test
+    void addCommentNotFoundExceptionTest() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        when(itemRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> itemService.addComment(1L, 1L, commentCreateDto));
+    }
 }
