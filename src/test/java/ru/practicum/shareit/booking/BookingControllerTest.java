@@ -16,17 +16,14 @@ import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.enums.State;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.exception.model.AccessException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.booking.enums.Status;
-import ru.practicum.shareit.user.model.User;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -49,7 +46,6 @@ public class BookingControllerTest {
 
     @MockBean
     private BookingService bookingService;
-
 
 
     private final ItemDto item = new ItemDto(1L, "item", "itemm", true, null);
@@ -149,7 +145,8 @@ public class BookingControllerTest {
                         .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))));
     }
 
-    @Test void getBookingsByOwnerStateIsUnsupportedTest() {
+    @Test
+    void getBookingsByOwnerStateIsUnsupportedTest() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> bookingService.getBookingsByOwner(1L, State.convertStateStringToEnum("UNSUPPORTED_STATUS"),
                         0, 10));

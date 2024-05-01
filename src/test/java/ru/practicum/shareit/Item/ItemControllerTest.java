@@ -111,7 +111,7 @@ public class ItemControllerTest {
     @Test
     void removeByIdTest() throws Exception {
         mvc.perform(delete("/items/1")
-                        .header("X-Sharer-User-Id", 1)).andExpect(status().isNoContent());
+                .header("X-Sharer-User-Id", 1)).andExpect(status().isNoContent());
     }
 
     @SneakyThrows
