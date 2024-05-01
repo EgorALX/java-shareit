@@ -237,9 +237,21 @@ public class ItemServiceTest {
     }
 
     @Test
-    void createCommentItemIdIsIncorrectTest() {
+    void createIncorrectIdTest() {
         assertThrows(NotFoundException.class,
                 () -> itemService.addComment(500L, 1L, commentCreateDto));
+    }
+
+    @Test
+    void createThrowExceptionIdIsIncorrectTest() {
+        assertThrows(NotFoundException.class,
+                () -> itemService.addItem(999L, itemCreateDto));
+    }
+
+    @Test
+    void updateIdIsIncorrectTest() {
+        assertThrows(NotFoundException.class,
+                () -> itemService.updateItem(itemCreateDto));
     }
 
 }
