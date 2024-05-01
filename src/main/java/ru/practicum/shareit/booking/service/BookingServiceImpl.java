@@ -95,7 +95,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getBookingsByOwner(Long userId, State state, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size, Sort.by(DESC, "start"));
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User " + userId + " not found "));
+                .orElseThrow(() -> new NotFoundException("User " + userId + " not found"));
         Page<Booking> bookingPage;
         switch (state) {
             case ALL:
