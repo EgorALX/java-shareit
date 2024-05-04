@@ -8,7 +8,7 @@ public enum State {
     WAITING,
     REJECTED;
 
-    public static State convertStateStringToEnum(String state) {
+    public static State stateValueOf(String state) {
         for (State s : State.values()) {
             if (s.name().equalsIgnoreCase(state)) {
                 return s;

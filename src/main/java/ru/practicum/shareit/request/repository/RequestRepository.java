@@ -13,8 +13,6 @@ import java.util.List;
 public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Request> findAllByRequesterId(Long requesterId, Sort sort);
 
-    List<Request> findAllByRequesterIdNotOrderByCreatedDesc(Long userId);
-
-    Page<Request> findAllByRequesterIdNot(Long userId, Pageable page);
+    List<Request> findAllByRequesterIdNot(Long userId, Pageable page);
 
 }

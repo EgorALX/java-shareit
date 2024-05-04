@@ -1,12 +1,9 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.enums.State;
@@ -26,6 +23,7 @@ import ru.practicum.shareit.exception.model.AccessException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,7 +94,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getBookingsByOwner(Long userId, State state, Pageable pageable) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User " + userId + " not found"));
-        Page<Booking> bookingPage = null;
+        List<Booking> bookingPage = Collections.emptyList();
         switch (state) {
             case ALL:
                 bookingPage = bookingRepository.findAllByItemOwner(user, pageable);
@@ -118,22 +116,22 @@ public class BookingServiceImpl implements BookingService {
                 bookingPage = bookingRepository.findAllByItemOwnerAndStatusEquals(user, Status.REJECTED, pageable);
                 break;
         }
-        return bookingPage.getContent().stream().map(bookingMapper::toBookingDto).collect(Collectors.toList());
+        return bookingPage.stream().map(bookingMapper::toBookingDto).collect(Collectors.toList());
     }
 
     @Override
     public List<BookingDto> getBookingsByUser(Long userId, State state, Pageable pageable) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User " + userId + " not found"));
-        Page<Booking> bookingPage = getPages(state, user, pageable);
-        return bookingPage.getContent().stream()
+        List<Booking> bookingPage = getPages(state, user, pageable);
+        return bookingPage.stream()
                 .map(bookingMapper::toBookingDto)
                 .collect(Collectors.toList());
     }
 
 
-    private Page<Booking> getPages(State state, User user, Pageable pageable) {
-        Page<Booking> bookingPage = null;
+    private List<Booking> getPages(State state, User user, Pageable pageable) {
+        List<Booking> bookingPage = Collections.emptyList();
         switch (state) {
             case ALL:
                 bookingPage = bookingRepository.findAllByBooker(user, pageable);

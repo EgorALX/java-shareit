@@ -2,6 +2,9 @@ package ru.practicum.shareit.request.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -10,6 +13,8 @@ import ru.practicum.shareit.request.service.RequestService;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Slf4j
 @RestController
@@ -52,7 +57,11 @@ public class ItemRequestController {
                                        @RequestParam(defaultValue = "0") Integer from,
                                        @RequestParam(required = false, defaultValue = "10") Integer size) {
         log.info("Getting all requests for userId: {} with pagination from: {} and size: {}", userId, from, size);
-        List<ItemRequestDto> result = service.getRequests(userId, from, size);
+        int pageNumber = (from == null ? 0 : from);
+        int pageSize = (size == null ? 500 : size);
+        Sort sort = Sort.by(DESC, "created");
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+        List<ItemRequestDto> result = service.getRequests(userId, pageable);
         log.info("All requests retrieved successfully for userId: {} with pagination from: {} and size: {}", userId, from, size);
         return result;
     }

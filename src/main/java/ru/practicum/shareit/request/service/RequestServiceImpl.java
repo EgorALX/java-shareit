@@ -47,17 +47,11 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<ItemRequestDto> getRequests(Long userId, Integer from, Integer size) {
+    public List<ItemRequestDto> getRequests(Long userId, Pageable pageable) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User " + userId + " not found"));
-        int pageNumber = (from == null ? 0 : from);
-        int pageSize = (size == null ? 500 : size);
-        Sort sort = Sort.by(DESC, "created");
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-        Page<Request> page = requestRepository.findAllByRequesterIdNot(userId, pageable);
-        return page.getContent().stream()
-                .map(mapper::toRequestDto)
-                .collect(Collectors.toList());
+        List<Request> page = requestRepository.findAllByRequesterIdNot(userId, pageable);
+        return page.stream().map(mapper::toRequestDto).collect(Collectors.toList());
     }
 
     @Override

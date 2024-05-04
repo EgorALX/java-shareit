@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.ShareItApp;
@@ -26,6 +29,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -91,7 +95,7 @@ public class ItemControllerTest {
     @SneakyThrows
     @Test
     void getListOfItemsByUserIdTest() {
-        when(itemService.getUsersItems(any(Long.class), any(Integer.class), nullable(Integer.class)))
+        when(itemService.getUsersItems(any(Long.class), any()))
                 .thenReturn(List.of(item));
 
         mvc.perform(get("/items")
@@ -137,7 +141,7 @@ public class ItemControllerTest {
     @SneakyThrows
     @Test
     void searchTest() {
-        when(itemService.search(any(String.class), any(Integer.class), nullable(Integer.class)))
+        when(itemService.search(any(String.class), any()))
                 .thenReturn(List.of(item));
 
         mvc.perform(get("/items/search?text=description")

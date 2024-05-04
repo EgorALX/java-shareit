@@ -236,9 +236,8 @@ public class BookingServiceTest {
 
     @Test
     void getBookingsByOwnerStateIsCurrentTest() {
-        Page<Booking> pages = new PageImpl<>(List.of(booking));
         when(bookingRepository.findAllByItemOwnerAndStartBeforeAndEndAfter(any(), any(), any(), any()))
-                .thenReturn(pages);
+                .thenReturn(List.of(booking));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "start"));
@@ -255,9 +254,8 @@ public class BookingServiceTest {
                 LocalDateTime.of(2022, 12, 12, 12, 12, 0),
                 LocalDateTime.of(2023, 1, 12, 12, 12, 0),
                 item1, user1, Status.APPROVED);
-        Page<Booking> pages = new PageImpl<>(List.of(booking1));
         when(bookingRepository.findAllByItemOwnerAndEndBefore(any(), any(), any()))
-                .thenReturn(pages);
+                .thenReturn(List.of(booking1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "start"));
@@ -274,9 +272,8 @@ public class BookingServiceTest {
                 LocalDateTime.of(2023, 12, 12, 12, 12, 0),
                 LocalDateTime.of(2024, 1, 12, 12, 12, 0),
                 item1, user1, Status.APPROVED);
-        Page<Booking> pages = new PageImpl<>(List.of(booking1));
         when(bookingRepository.findAllByItemOwnerAndStartAfter(any(), any(), any()))
-                .thenReturn(pages);
+                .thenReturn(List.of(booking1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
 
 
@@ -289,9 +286,8 @@ public class BookingServiceTest {
 
     @Test
     void getBookingsByOwnerStateIsWaitingTest() {
-        Page<Booking> pages = new PageImpl<>(List.of(booking));
         when(bookingRepository.findAllByItemOwnerAndStatusEquals(any(), any(), any()))
-                .thenReturn(pages);
+                .thenReturn(List.of(booking));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "start"));
@@ -309,9 +305,8 @@ public class BookingServiceTest {
                 LocalDateTime.of(2023, 12, 12, 12, 12, 0),
                 LocalDateTime.of(2024, 1, 12, 12, 12, 0),
                 item1, user1, Status.REJECTED);
-        Page<Booking> pages = new PageImpl<>(List.of(booking1));
         when(bookingRepository.findAllByItemOwnerAndStatusEquals(any(), any(), any()))
-                .thenReturn(pages);
+                .thenReturn(List.of(booking1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "start"));
@@ -330,9 +325,8 @@ public class BookingServiceTest {
 
     @Test
     void getBookingsByUserStateIsAllTest() {
-        Page<Booking> pages = new PageImpl<>(List.of(booking));
         when(bookingRepository.findAllByBooker(any(), any()))
-                .thenReturn(pages);
+                .thenReturn(List.of(booking));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
 
         List<BookingDto> bookings = bookingService.getBookingsByUser(user1.getId(),
@@ -348,9 +342,8 @@ public class BookingServiceTest {
                 LocalDateTime.of(2023, 10, 12, 12, 12, 0),
                 LocalDateTime.of(2024, 1, 12, 12, 12, 0),
                 item1, user1, Status.APPROVED);
-        Page<Booking> pages = new PageImpl<>(List.of(booking1));
         when(bookingRepository.findAllByBookerAndStartBeforeAndEndAfter(any(), any(), any(), any()))
-                .thenReturn(pages);
+                .thenReturn(List.of(booking1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
 
         List<BookingDto> bookings = bookingService.getBookingsByUser(user1.getId(),
@@ -366,9 +359,8 @@ public class BookingServiceTest {
                 LocalDateTime.of(2022, 10, 12, 12, 12, 0),
                 LocalDateTime.of(2023, 1, 12, 12, 12, 0),
                 item1, user1, Status.APPROVED);
-        Page<Booking> pages = new PageImpl<>(List.of(booking1));
         when(bookingRepository.findAllByBookerAndEndBefore(any(), any(), any()))
-                .thenReturn(pages);
+                .thenReturn(List.of(booking1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
 
         List<BookingDto> bookings = bookingService.getBookingsByUser(user1.getId(),
@@ -384,9 +376,8 @@ public class BookingServiceTest {
                 LocalDateTime.of(2023, 12, 12, 12, 12, 0),
                 LocalDateTime.of(2024, 1, 12, 12, 12, 0),
                 item1, user1, Status.APPROVED);
-        Page<Booking> pages = new PageImpl<>(List.of(booking1));
         when(bookingRepository.findAllByBookerAndStartAfter(any(), any(), any()))
-                .thenReturn(pages);
+                .thenReturn(List.of(booking1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
 
         List<BookingDto> bookings = bookingService.getBookingsByUser(user1.getId(),
@@ -397,9 +388,8 @@ public class BookingServiceTest {
 
     @Test
     void getBookingsByUserStateIsWaitingTest() {
-        Page<Booking> pages = new PageImpl<>(List.of(booking));
         when(bookingRepository.findAllByBookerAndStatusEquals(any(), any(), any()))
-                .thenReturn(pages);
+                .thenReturn(List.of(booking));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
 
         List<BookingDto> bookings = bookingService.getBookingsByUser(user1.getId(),
@@ -415,9 +405,8 @@ public class BookingServiceTest {
                 LocalDateTime.of(2023, 12, 12, 12, 12, 0),
                 LocalDateTime.of(2024, 1, 12, 12, 12, 0),
                 item1, user1, Status.REJECTED);
-        Page<Booking> pages = new PageImpl<>(List.of(booking1));
         when(bookingRepository.findAllByBookerAndStatusEquals(any(), any(), any()))
-                .thenReturn(pages);
+                .thenReturn(List.of(booking1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
 
         List<BookingDto> bookings = bookingService.getBookingsByUser(user1.getId(),

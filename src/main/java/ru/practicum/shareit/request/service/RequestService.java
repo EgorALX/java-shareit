@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request.service;
 
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
@@ -13,5 +14,5 @@ public interface RequestService {
 
     List<ItemRequestDto> getByOwner(Long userId);
 
-    List<ItemRequestDto> getRequests(Long userId, Integer from, Integer size);
+    List<ItemRequestDto> getRequests(Long userId, Pageable pageable);
 }

@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.ShareItApp;
 import ru.practicum.shareit.exception.model.NotFoundException;
@@ -21,6 +24,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Transactional
 @SpringBootTest(classes = ShareItApp.class)
@@ -76,7 +80,9 @@ public class RequestServiceTest {
         UserDto thisAnna = userService.addUser(userdto2);
         ItemRequestDto thisRequest = requestService.create(thisUser.getId(), request,
                 LocalDateTime.of(2020, 1, 1, 2, 1, 1));
-        List<ItemRequestDto> returnedRequest = requestService.getRequests(thisAnna.getId(), 0, 10);
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "created"));
+        List<ItemRequestDto> returnedRequest = requestService.getRequests(thisAnna.getId(), pageable);
 
         assertFalse(returnedRequest.isEmpty());
         assertTrue(returnedRequest.contains(thisRequest));
@@ -84,8 +90,10 @@ public class RequestServiceTest {
 
     @Test
     void getAllIdIsIncorrectTest() {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "created"));
+
         assertThrows(NotFoundException.class,
-                () -> requestService.getRequests(500L, 0, 10));
+                () -> requestService.getRequests(500L, pageable));
     }
 
     @Test
@@ -94,7 +102,9 @@ public class RequestServiceTest {
         UserDto user2 = userService.addUser(userdto2);
         ItemRequestDto thisRequest = requestService.create(user.getId(), request,
                 LocalDateTime.of(2020, 1, 1, 2, 1, 1));
-        List<ItemRequestDto> returnedRequest = requestService.getRequests(user2.getId(), 0, null);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "created"));
+
+        List<ItemRequestDto> returnedRequest = requestService.getRequests(user2.getId(), pageable);
 
         assertFalse(returnedRequest.isEmpty());
         assertTrue(returnedRequest.contains(thisRequest));

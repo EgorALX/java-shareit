@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -123,16 +125,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getUsersItems(Long userId, Integer from, Integer size) {
-        userRepository.findById(userId)
+    public List<ItemDto> getUsersItems(Long userId, Pageable pageable) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User " + userId + " not found"));
-        List<Item> items = itemRepository.findItemByOwnerId(userId);
-        if (from != null && size != null) {
-            items = items.subList(from, Math.min(from + size, items.size()));
-        }
+
+        List<Item> items = itemRepository.findItemByOwnerId(userId, pageable);
         List<Booking> bookings = bookingRepository.findAllByItemInAndStatus(items, Status.APPROVED);
         Map<Long, List<Booking>> bookingsByItemId = bookings.stream()
                 .collect(Collectors.groupingBy(booking -> booking.getItem().getId()));
+
         List<Comment> allComments = commentRepository.findAllByItemIn(items);
         Map<Long, List<CommentDto>> commentsByItemId = allComments.stream()
                 .collect(Collectors.groupingBy(comment -> comment.getItem().getId()))
@@ -141,8 +142,9 @@ public class ItemServiceImpl implements ItemService {
                         Map.Entry::getKey,
                         entry -> entry.getValue().stream()
                                 .map(commentMapper::toCommentDto)
-                                .collect(toList())
+                                .collect(Collectors.toList())
                 ));
+
         List<ItemDto> itemDtoList = new ArrayList<>();
         for (Item item : items) {
             List<Booking> itemBookings = bookingsByItemId.getOrDefault(item.getId(), Collections.emptyList());
@@ -156,10 +158,10 @@ public class ItemServiceImpl implements ItemService {
                     .min(Comparator.comparing(Booking::getStart))
                     .orElse(null);
             ItemDto itemDto = itemMapper.toItemDto(item);
-            if (bookingMapper != null && lastBooking != null) {
+            if (bookingMapper!= null && lastBooking!= null) {
                 itemDto.setLastBooking(bookingMapper.toBookingForItemDto(lastBooking));
             }
-            if (nextBooking != null) {
+            if (nextBooking!= null) {
                 itemDto.setNextBooking(bookingMapper.toBookingForItemDto(nextBooking));
             }
             itemDto.setComments(commentsByItemId.getOrDefault(item.getId(), Collections.emptyList()));
@@ -168,8 +170,6 @@ public class ItemServiceImpl implements ItemService {
         return itemDtoList;
     }
 
-
-
     @Override
     @Transactional
     public void removeById(Long userId, Long itemId) {
@@ -177,22 +177,20 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> search(String text, Integer from, Integer size) {
+    public List<ItemDto> search(String text, Pageable pageable) {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
         text = text.toLowerCase();
-        List<Item> items = itemRepository.search(text, text, true);
-        if (from != null && size != null) {
-            items = items.subList(from, Math.min(from + size, items.size()));
-        }
+        List<Item> itemsPage = itemRepository.search(text, text, true, pageable);
         List<ItemDto> itemDtoList = new ArrayList<>();
-        for (Item item : items) {
+        for (Item item : itemsPage) {
             ItemDto itemDto = itemMapper.toItemDto(item);
             itemDtoList.add(itemDto);
         }
         return itemDtoList;
     }
+
 
 
     @Transactional

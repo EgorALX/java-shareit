@@ -9,9 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.ShareItApp;
@@ -33,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -130,7 +126,6 @@ public class BookingControllerTest {
     @Test
     @SneakyThrows
     void getBookingByOwnerTest() {
-        Pageable pageable = PageRequest.of(0, 4, Sort.by(DESC, "start"));
         when(bookingService.getBookingsByOwner(any(Long.class), any(State.class), any()))
                 .thenReturn(List.of(booking));
 
@@ -152,7 +147,7 @@ public class BookingControllerTest {
     @Test
     void getBookingsByOwnerStateIsUnsupportedTest() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> bookingService.getBookingsByOwner(1L, State.convertStateStringToEnum("UNSUPPORTED_STATUS"),
+                () -> bookingService.getBookingsByOwner(1L, State.stateValueOf("UNSUPPORTED_STATUS"),
                         any()));
 
         assertEquals("Unknown state: UNSUPPORTED_STATUS", exception.getMessage());

@@ -13,7 +13,6 @@ import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
 import javax.validation.ValidationException;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -64,7 +63,7 @@ public class BookingController {
         log.info("Getting bookings by owner for userId: {} with state: {}", userId, state);
         Pageable pageable = PageRequest.of(from, size, Sort.by(DESC, "start"));
         List<BookingDto> result = bookingService.getBookingsByOwner(userId,
-                State.convertStateStringToEnum(state), pageable);
+                State.stateValueOf(state), pageable);
         log.info("Bookings retrieved successfully by owner for userId: {} with state: {}", userId, state);
         return result;
     }
@@ -79,7 +78,8 @@ public class BookingController {
         }
         log.info("Getting bookings by user for userId: {} with state: {}", userId, state);
         Pageable pageable = PageRequest.of((from / size), size, Sort.by(DESC, "start"));
-        List<BookingDto> result = bookingService.getBookingsByUser(userId, State.convertStateStringToEnum(state), pageable);
+        List<BookingDto> result = bookingService
+                .getBookingsByUser(userId, State.stateValueOf(state), pageable);
         log.info("Bookings retrieved successfully by user for userId: {} with state: {}", userId, state);
         return result;
     }

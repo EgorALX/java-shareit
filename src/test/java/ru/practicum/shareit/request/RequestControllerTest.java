@@ -92,7 +92,7 @@ public class RequestControllerTest {
     @SneakyThrows
     @Test
     void getAllTest() {
-        when(requestService.getRequests(any(Long.class), any(Integer.class), any(Integer.class)))
+        when(requestService.getRequests(any(Long.class), any()))
                 .thenReturn(List.of(request));
 
         mockMvc.perform(get("/requests/all")

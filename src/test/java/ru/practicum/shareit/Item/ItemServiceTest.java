@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.*;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.ShareItApp;
 import ru.practicum.shareit.booking.enums.Status;
@@ -38,6 +39,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Transactional
 @SpringBootTest(classes = ShareItApp.class)
@@ -195,26 +197,31 @@ public class ItemServiceTest {
         List<Comment> allComments = Collections.singletonList(comment1);
         CommentDto commentDto1 = new CommentDto();
 
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "start"));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(itemRepository.findItemByOwnerId(1L)).thenReturn(Collections.singletonList(item));
+        when(itemRepository.findItemByOwnerId(1L, pageable))
+                .thenReturn(Collections.singletonList(item));
         when(itemMapper.toItemDto(item)).thenReturn(itemDto);
         when(bookingRepository.findAllByItemInAndStatus(Collections.singletonList(item), Status.APPROVED))
                 .thenReturn(Collections.singletonList(approvedBooking));
         when(commentRepository.findAllByItemIn(Collections.singletonList(item))).thenReturn(allComments);
         when(commentMapper.toCommentDto(comment1)).thenReturn(commentDto1);
 
-        List<ItemDto> result = itemService.getUsersItems(1L, 0, 10);
+        List<ItemDto> result = itemService.getUsersItems(1L, pageable);
 
         assertEquals(1, result.size());
         assertEquals(itemDto, result.get(0));
+        assertEquals(1, result.get(0).getComments().size());
+        assertEquals(commentDto1, result.get(0).getComments().get(0));
         verify(userRepository, times(1)).findById(1L);
-        verify(itemRepository, times(1)).findItemByOwnerId(1L);
+        verify(itemRepository, times(1)).findItemByOwnerId(1L, pageable);
         verify(itemMapper, times(1)).toItemDto(item);
         verify(bookingRepository, times(1))
                 .findAllByItemInAndStatus(Collections.singletonList(item), Status.APPROVED);
         verify(commentRepository, times(1)).findAllByItemIn(Collections.singletonList(item));
         verify(commentMapper, times(1)).toCommentDto(comment1);
     }
+
 
 
     @Test
@@ -228,29 +235,32 @@ public class ItemServiceTest {
 
     @Test
     void searchTest() {
-        when(itemRepository.search("test", "test", true)).thenReturn(Collections.singletonList(item));
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "start"));
+        when(itemRepository.search("test", "test", true, pageable))
+                .thenReturn(Collections.singletonList(item));
         when(itemMapper.toItemDto(item)).thenReturn(itemDto);
-        List<ItemDto> result = itemService.search("test", 0, 10);
+        List<ItemDto> result = itemService.search("test", pageable);
         assertEquals(1, result.size());
         assertEquals(itemDto, result.get(0));
-        verify(itemRepository, times(1)).search("test", "test", true);
+        verify(itemRepository, times(1))
+                .search("test", "test", true, pageable);
         verify(itemMapper, times(1)).toItemDto(item);
     }
 
     @Test
     void testSearchWithBlankText() {
         String text = "   ";
-        Integer from = 0;
-        Integer size = 10;
-        when(itemRepository.search(text, text, true)).thenReturn(new ArrayList<>());
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "start"));
 
-        List<ItemDto> result = itemService.search(text, from, size);
+        when(itemRepository.search(text, text, true,pageable ))
+                .thenReturn(Collections.singletonList(item));
+
+        List<ItemDto> result = itemService.search(text, pageable);
         assertTrue(result.isEmpty());
     }
 
     @Test
     void addComment_success() {
-        // Подготовка данных
         Long userId = 1L;
         Long itemId = 2L;
         CommentCreateDto commentCreateDto = new CommentCreateDto();
@@ -259,7 +269,6 @@ public class ItemServiceTest {
         Comment comment = new Comment();
         CommentDto commentDto = new CommentDto();
 
-        // Настройка моков
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
         when(commentMapper.toComment(commentCreateDto)).thenReturn(comment);
@@ -270,10 +279,8 @@ public class ItemServiceTest {
         when(bookingRepository.findAllByBookerIdAndItemIdAndStatusEqualsAndEndIsBefore(
                 any(), any(), any(), any())).thenReturn(bookings);
 
-        // Вызов метода
         CommentDto result = itemService.addComment(itemId, userId, commentCreateDto);
 
-        // Проверка результата
         assertEquals(commentDto, result);
         verify(userRepository).findById(userId);
         verify(itemRepository).findById(itemId);
