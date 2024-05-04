@@ -148,15 +148,8 @@ public class ItemServiceImpl implements ItemService {
         List<ItemDto> itemDtoList = new ArrayList<>();
         for (Item item : items) {
             List<Booking> itemBookings = bookingsByItemId.getOrDefault(item.getId(), Collections.emptyList());
-            Booking lastBooking = itemBookings.stream()
-                    .filter(booking -> booking.getStart().isBefore(LocalDateTime.now()) ||
-                            booking.getStart().isEqual(LocalDateTime.now()))
-                    .max(Comparator.comparing(Booking::getStart))
-                    .orElse(null);
-            Booking nextBooking = itemBookings.stream()
-                    .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
-                    .min(Comparator.comparing(Booking::getStart))
-                    .orElse(null);
+            Booking lastBooking = getLastBooking(itemBookings);
+            Booking nextBooking = getNextBooking(itemBookings);
             ItemDto itemDto = itemMapper.toItemDto(item);
             if (bookingMapper!= null && lastBooking!= null) {
                 itemDto.setLastBooking(bookingMapper.toBookingForItemDto(lastBooking));
@@ -169,6 +162,22 @@ public class ItemServiceImpl implements ItemService {
         }
         return itemDtoList;
     }
+
+    private Booking getLastBooking(List<Booking> itemBookings) {
+        return itemBookings.stream()
+                .filter(booking -> booking.getStart().isBefore(LocalDateTime.now()) ||
+                        (booking.getStart().isEqual(LocalDateTime.now()) && booking.getEnd().isAfter(LocalDateTime.now())))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private Booking getNextBooking(List<Booking> itemBookings) {
+        return itemBookings.stream()
+                .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
+                .reduce((first, second) -> second)
+                .orElse(null);
+    }
+
 
     @Override
     @Transactional
