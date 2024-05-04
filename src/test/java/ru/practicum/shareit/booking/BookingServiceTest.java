@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.*;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.ShareItApp;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
@@ -25,7 +25,6 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,6 +34,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Transactional
 @SpringBootTest(classes = ShareItApp.class)
@@ -241,8 +241,9 @@ public class BookingServiceTest {
                 .thenReturn(pages);
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
 
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "start"));
         List<BookingDto> bookings = bookingService.getBookingsByOwner(user2.getId(),
-                State.CURRENT, 0, 10);
+                State.CURRENT, pageable);
 
         assertFalse(bookings.isEmpty());
     }
@@ -259,8 +260,9 @@ public class BookingServiceTest {
                 .thenReturn(pages);
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
 
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "start"));
         List<BookingDto> bookings = bookingService.getBookingsByOwner(user2.getId(),
-                State.PAST, 0, 10);
+                State.PAST, pageable);
 
         assertFalse(bookings.isEmpty());
     }
@@ -277,8 +279,10 @@ public class BookingServiceTest {
                 .thenReturn(pages);
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
 
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "start"));
         List<BookingDto> bookings = bookingService.getBookingsByOwner(user2.getId(),
-                State.FUTURE, 0, 10);
+                State.FUTURE, pageable);
 
         assertFalse(bookings.isEmpty());
     }
@@ -290,8 +294,10 @@ public class BookingServiceTest {
                 .thenReturn(pages);
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
 
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "start"));
+
         List<BookingDto> bookings = bookingService.getBookingsByOwner(user2.getId(),
-                State.WAITING, 0, 10);
+                State.WAITING, pageable);
 
         assertFalse(bookings.isEmpty());
     }
@@ -308,8 +314,10 @@ public class BookingServiceTest {
                 .thenReturn(pages);
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
 
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "start"));
+
         List<BookingDto> bookings = bookingService.getBookingsByOwner(user2.getId(),
-                State.REJECTED, 0, 10);
+                State.REJECTED, pageable);
 
         assertFalse(bookings.isEmpty());
     }
@@ -317,7 +325,7 @@ public class BookingServiceTest {
     @Test
     void getBookingsByUseridIsIncorrectTest() {
         assertThrows(NotFoundException.class,
-                () -> bookingService.getBookingsByUser(999L, State.ALL, 0, 10));
+                () -> bookingService.getBookingsByUser(999L, State.ALL, any()));
     }
 
     @Test
@@ -328,7 +336,7 @@ public class BookingServiceTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
 
         List<BookingDto> bookings = bookingService.getBookingsByUser(user1.getId(),
-                State.ALL, 0, 10);
+                State.ALL, any());
 
         assertFalse(bookings.isEmpty());
     }
@@ -346,7 +354,7 @@ public class BookingServiceTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
 
         List<BookingDto> bookings = bookingService.getBookingsByUser(user1.getId(),
-                State.CURRENT, 0, 10);
+                State.CURRENT, any());
 
         assertFalse(bookings.isEmpty());
     }
@@ -364,7 +372,7 @@ public class BookingServiceTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
 
         List<BookingDto> bookings = bookingService.getBookingsByUser(user1.getId(),
-                State.PAST, 0, 10);
+                State.PAST, any());
 
         assertFalse(bookings.isEmpty());
     }
@@ -382,7 +390,7 @@ public class BookingServiceTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
 
         List<BookingDto> bookings = bookingService.getBookingsByUser(user1.getId(),
-                State.FUTURE, 0, 10);
+                State.FUTURE, any());
 
         assertFalse(bookings.isEmpty());
     }
@@ -395,7 +403,7 @@ public class BookingServiceTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
 
         List<BookingDto> bookings = bookingService.getBookingsByUser(user1.getId(),
-                State.WAITING, 0, 10);
+                State.WAITING, any());
 
         assertFalse(bookings.isEmpty());
     }
@@ -413,7 +421,7 @@ public class BookingServiceTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
 
         List<BookingDto> bookings = bookingService.getBookingsByUser(user1.getId(),
-                State.REJECTED, 0, 10);
+                State.REJECTED, any());
 
         assertFalse(bookings.isEmpty());
     }

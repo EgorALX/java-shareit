@@ -15,6 +15,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.model.NotFoundException;
+import ru.practicum.shareit.exception.model.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.booking.model.Pagination;
@@ -92,11 +93,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getBookingsByOwner(Long userId, State state, Integer from, Integer size) {
-        Pageable pageable = PageRequest.of(from, size, Sort.by(DESC, "start"));
+    public List<BookingDto> getBookingsByOwner(Long userId, State state, Pageable pageable) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User " + userId + " not found"));
-        Page<Booking> bookingPage;
+        Page<Booking> bookingPage = null;
         switch (state) {
             case ALL:
                 bookingPage = bookingRepository.findAllByItemOwner(user, pageable);
@@ -117,38 +117,23 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED:
                 bookingPage = bookingRepository.findAllByItemOwnerAndStatusEquals(user, Status.REJECTED, pageable);
                 break;
-            default:
-                throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
         }
         return bookingPage.getContent().stream().map(bookingMapper::toBookingDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<BookingDto> getBookingsByUser(Long userId, State state, Integer from, Integer size) {
+    public List<BookingDto> getBookingsByUser(Long userId, State state, Pageable pageable) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User " + userId + " not found"));
-        List<BookingDto> list = new ArrayList<>();
-        Sort sort = Sort.by(DESC, "start");
-        Pagination pagination = new Pagination(from, size);
-        int totalPages = pagination.getTotalPages();
-        int currentPage = pagination.getIndex();
-        while (currentPage < totalPages) {
-            Pageable page = PageRequest.of(currentPage, pagination.getPageSize(), sort);
-            Page<Booking> bookingPage = getPages(state, user, page);
-            list.addAll(bookingPage.getContent().stream().map(bookingMapper::toBookingDto).collect(Collectors.toList()));
-            currentPage++;
-            if (!bookingPage.hasNext()) {
-                break;
-            }
-        }
-        if (size != null) {
-            list = list.stream().limit(size).collect(Collectors.toList());
-        }
-        return list;
+        Page<Booking> bookingPage = getPages(state, user, pageable);
+        return bookingPage.getContent().stream()
+                .map(bookingMapper::toBookingDto)
+                .collect(Collectors.toList());
     }
 
+
     private Page<Booking> getPages(State state, User user, Pageable pageable) {
-        Page<Booking> bookingPage;
+        Page<Booking> bookingPage = null;
         switch (state) {
             case ALL:
                 bookingPage = bookingRepository.findAllByBooker(user, pageable);
@@ -170,8 +155,6 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED:
                 bookingPage = bookingRepository.findAllByBookerAndStatusEquals(user, Status.REJECTED, pageable);
                 break;
-            default:
-                throw new AccessException("Unknown state: UNSUPPORTED_STATUS");
         }
         return bookingPage;
     }

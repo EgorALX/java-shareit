@@ -25,7 +25,7 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto addItem(@RequestHeader(USER_ID_HEADER) Long userId, @Valid @RequestBody ItemCreateDto item) {
+    public ItemDto addItem(@RequestHeader(USER_ID_HEADER) long userId, @Valid @RequestBody ItemCreateDto item) {
         log.info("Adding item for user with id: {}", userId);
         ItemDto addedItemDto = itemService.addItem(userId, item);
         log.info("Item added with id: {}", addedItemDto.getId());
@@ -33,7 +33,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader(USER_ID_HEADER) Long userId,
+    public ItemDto updateItem(@RequestHeader(USER_ID_HEADER) long userId,
                               @PathVariable Long itemId,
                               @RequestBody ItemCreateDto item) {
         log.info("Updating item with id: {}", itemId);
@@ -54,14 +54,14 @@ public class ItemController {
 
     @DeleteMapping("/{itemId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeById(@RequestHeader(USER_ID_HEADER) Long userId, @PathVariable Long itemId) {
+    public void removeById(@RequestHeader(USER_ID_HEADER) long userId, @PathVariable Long itemId) {
         log.info("Removing item with id: {}", itemId);
         itemService.removeById(userId, itemId);
         log.info("Item removed with id: {}", itemId);
     }
 
     @GetMapping
-    public List<ItemDto> getUsersItems(@RequestHeader(USER_ID_HEADER) Long userId,
+    public List<ItemDto> getUsersItems(@RequestHeader(USER_ID_HEADER) long userId,
                                        @RequestParam(defaultValue = "0") Integer from,
                                        @RequestParam(required = false) Integer size) {
         log.info("Getting items for user with id: {}", userId);
@@ -81,7 +81,7 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto addComment(@RequestHeader(USER_ID_HEADER) Long userId,
+    public CommentDto addComment(@RequestHeader(USER_ID_HEADER) long userId,
                                  @Valid @RequestBody CommentCreateDto comment,
                                  @PathVariable Long itemId) {
         return itemService.addComment(itemId, userId, comment);
