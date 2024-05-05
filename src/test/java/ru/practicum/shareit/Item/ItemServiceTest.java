@@ -223,7 +223,6 @@ public class ItemServiceTest {
     }
 
 
-
     @Test
     void removeByIdTest() {
         doNothing().when(itemRepository).deleteById(1L);
@@ -252,7 +251,7 @@ public class ItemServiceTest {
         String text = "   ";
         Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "start"));
 
-        when(itemRepository.search(text, text, true,pageable ))
+        when(itemRepository.search(text, text, true, pageable))
                 .thenReturn(Collections.singletonList(item));
 
         List<ItemDto> result = itemService.search(text, pageable);
