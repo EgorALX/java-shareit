@@ -20,7 +20,7 @@ public class ItemRequestCreateDto {
     @NotNull
     private String description;
 
-    private UserDto requester;
+    private long requesterId;
 
     private LocalDateTime created;
 }

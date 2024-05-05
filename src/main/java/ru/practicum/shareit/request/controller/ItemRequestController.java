@@ -30,7 +30,9 @@ public class ItemRequestController {
     public ItemRequestDto create(@RequestHeader(USER_ID_HEADER) long userId,
                                  @Valid @RequestBody ItemRequestCreateDto itemRequestDto) {
         log.info("Creating a new request for userId: {}", userId);
-        ItemRequestDto result = service.create(userId, itemRequestDto, LocalDateTime.now());
+        itemRequestDto.setCreated(LocalDateTime.now());
+        itemRequestDto.setRequesterId(userId);
+        ItemRequestDto result = service.create(itemRequestDto);
         log.info("Request created successfully for userId: {}", userId);
         return result;
     }

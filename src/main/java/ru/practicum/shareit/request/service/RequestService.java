@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RequestService {
-    ItemRequestDto create(Long userId, ItemRequestCreateDto request, LocalDateTime localDateTime);
+    ItemRequestDto create(ItemRequestCreateDto request);
 
     ItemRequestDto getById(Long userId, Long requestId);
 

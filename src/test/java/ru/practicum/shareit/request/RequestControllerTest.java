@@ -3,15 +3,12 @@ package ru.practicum.shareit.request;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.ShareItApp;
+import ru.practicum.shareit.request.controller.ItemRequestController;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.RequestService;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -29,9 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
-@SpringBootTest(classes = ShareItApp.class)
-@AutoConfigureMockMvc
+@WebMvcTest(controllers = ItemRequestController.class)
 public class RequestControllerTest {
 
     @Autowired
@@ -42,14 +37,13 @@ public class RequestControllerTest {
     private MockMvc mockMvc;
 
     private final UserDto user = new UserDto(1L, "userDto", "user@yandex.ru");
-    private final ItemRequestDto request = new ItemRequestDto(2L, "request", user,
+    private final ItemRequestDto request = new ItemRequestDto(2L, "request",
             LocalDateTime.of(2021, 1, 1, 1, 1, 1), null);
 
     @SneakyThrows
     @Test
     void createTest() {
-        when(requestService.create(any(Long.class), any(), any(LocalDateTime.class)))
-                .thenReturn(request);
+        when(requestService.create(any())).thenReturn(request);
 
         mockMvc.perform(post("/requests")
                         .content(objectMapper.writeValueAsString(request))
@@ -60,9 +54,6 @@ public class RequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(request.getId()), Long.class))
                 .andExpect(jsonPath("$.description", is(request.getDescription())))
-                .andExpect(jsonPath("$.requester.id", is(request.getRequester().getId()), Long.class))
-                .andExpect(jsonPath("$.requester.name", is(request.getRequester().getName())))
-                .andExpect(jsonPath("$.requester.email", is(request.getRequester().getEmail())))
                 .andExpect(jsonPath("$.created",
                         is(request.getCreated().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))));
     }
@@ -82,9 +73,6 @@ public class RequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(request.getId()), Long.class))
                 .andExpect(jsonPath("$.description", is(request.getDescription())))
-                .andExpect(jsonPath("$.requester.id", is(request.getRequester().getId()), Long.class))
-                .andExpect(jsonPath("$.requester.name", is(request.getRequester().getName())))
-                .andExpect(jsonPath("$.requester.email", is(request.getRequester().getEmail())))
                 .andExpect(jsonPath("$.created",
                         is(request.getCreated().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))));
     }
@@ -104,9 +92,6 @@ public class RequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].id", is(request.getId()), Long.class))
                 .andExpect(jsonPath("$.[0].description", is(request.getDescription())))
-                .andExpect(jsonPath("$.[0].requester.id", is(request.getRequester().getId()), Long.class))
-                .andExpect(jsonPath("$.[0].requester.name", is(request.getRequester().getName())))
-                .andExpect(jsonPath("$.[0].requester.email", is(request.getRequester().getEmail())))
                 .andExpect(jsonPath("$.[0].created",
                         is(request.getCreated().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))));
     }
@@ -126,9 +111,6 @@ public class RequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].id", is(request.getId()), Long.class))
                 .andExpect(jsonPath("$.[0].description", is(request.getDescription())))
-                .andExpect(jsonPath("$.[0].requester.id", is(request.getRequester().getId()), Long.class))
-                .andExpect(jsonPath("$.[0].requester.name", is(request.getRequester().getName())))
-                .andExpect(jsonPath("$.[0].requester.email", is(request.getRequester().getEmail())))
                 .andExpect(jsonPath("$.[0].created",
                         is(request.getCreated().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))));
     }

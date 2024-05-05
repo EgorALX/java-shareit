@@ -21,19 +21,18 @@ public class RequestMapper {
 
     private final ItemService itemService;
 
-    public Request toRequest(ItemRequestCreateDto request, Long userId, LocalDateTime localDateTime) {
+    public Request toRequest(ItemRequestCreateDto request) {
         return new Request(
                 null,
                 request.getDescription(),
-                userMapper.toUser(userService.getById(userId)),
-                localDateTime);
+                userMapper.toUser(userService.getById(request.getRequesterId())),
+                request.getCreated());
     }
 
     public ItemRequestDto toRequestDto(Request request) {
         return new ItemRequestDto(
                 request.getId(),
                 request.getDescription(),
-                userMapper.toUserDto(request.getRequester()),
                 request.getCreated(),
                 itemService.getItemsByRequestId(request.getId()));
     }

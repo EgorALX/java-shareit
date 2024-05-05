@@ -12,6 +12,7 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.mapper.RequestMapper;
 import ru.practicum.shareit.request.model.Request;
 import ru.practicum.shareit.request.repository.RequestRepository;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -31,10 +32,10 @@ public class RequestServiceImpl implements RequestService {
     private final RequestMapper mapper;
 
     @Override
-    public ItemRequestDto create(Long userId, ItemRequestCreateDto request, LocalDateTime created) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User " + userId + " not found"));
-        Request newRequest = mapper.toRequest(request, userId, created);
+    public ItemRequestDto create(ItemRequestCreateDto request) {
+        User user = userRepository.findById(request.getRequesterId())
+                .orElseThrow(() -> new NotFoundException("User " + request.getRequesterId() + " not found"));
+        Request newRequest = mapper.toRequest(request);
         return mapper.toRequestDto(requestRepository.save(newRequest));
     }
 

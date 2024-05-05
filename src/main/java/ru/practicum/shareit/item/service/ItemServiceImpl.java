@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -151,10 +150,10 @@ public class ItemServiceImpl implements ItemService {
             Booking lastBooking = getLastBooking(itemBookings);
             Booking nextBooking = getNextBooking(itemBookings);
             ItemDto itemDto = itemMapper.toItemDto(item);
-            if (bookingMapper!= null && lastBooking!= null) {
+            if (bookingMapper != null && lastBooking != null) {
                 itemDto.setLastBooking(bookingMapper.toBookingForItemDto(lastBooking));
             }
-            if (nextBooking!= null) {
+            if (nextBooking != null) {
                 itemDto.setNextBooking(bookingMapper.toBookingForItemDto(nextBooking));
             }
             itemDto.setComments(commentsByItemId.getOrDefault(item.getId(), Collections.emptyList()));
@@ -199,7 +198,6 @@ public class ItemServiceImpl implements ItemService {
         }
         return itemDtoList;
     }
-
 
 
     @Transactional
