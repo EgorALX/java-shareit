@@ -23,7 +23,7 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto addUser(@Valid @RequestBody UserCreateDto userCreateDto) {
-        log.info("Adding user with email:{}", userCreateDto.getEmail());
+        log.info("Adding user with email: {}", userCreateDto.getEmail());
         UserDto addedUserDto = userService.addUser(userCreateDto);
         log.info("User added with id: {}", addedUserDto.getId());
         return addedUserDto;
