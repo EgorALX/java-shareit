@@ -9,7 +9,6 @@ import ru.practicum.shareit.request.model.Request;
 import ru.practicum.shareit.user.mapping.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
-import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
