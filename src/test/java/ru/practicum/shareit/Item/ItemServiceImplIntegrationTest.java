@@ -26,22 +26,15 @@ public class ItemServiceImplIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        // Создаем нового пользователя для сохранения
-        User newUser = new User();
-        newUser.setId(1L);
-        newUser.setName("Test User");
-        newUser.setEmail("test@example.com");
-        entityManager.persist(newUser);
-        entityManager.flush();
     }
 
     @Test
     void testAddItem() {
-        User newUser = new User();
-        newUser.setId(1L);
-        newUser.setName("Test User");
-        newUser.setEmail("test@example.com");
-        entityManager.persist(newUser);
+        User user = new User();
+        user.setId(1L);
+        user.setName("Test User");
+        user.setEmail("test@example.com");
+        entityManager.merge(user);
         entityManager.flush();
 
         ItemCreateDto itemCreateDto = new ItemCreateDto();
@@ -49,7 +42,7 @@ public class ItemServiceImplIntegrationTest {
         itemCreateDto.setDescription("Test Description");
         itemCreateDto.setAvailable(true);
 
-        ItemDto result = itemService.addItem(newUser.getId(), itemCreateDto);
+        ItemDto result = itemService.addItem(user.getId(), itemCreateDto);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isNotNull();
@@ -64,7 +57,7 @@ public class ItemServiceImplIntegrationTest {
         user.setId(2L);
         user.setName("Test User");
         user.setEmail("test@example.com");
-        entityManager.persist(user);
+        entityManager.merge(user);
         entityManager.flush();
 
         ItemCreateDto itemCreateDto = new ItemCreateDto();
