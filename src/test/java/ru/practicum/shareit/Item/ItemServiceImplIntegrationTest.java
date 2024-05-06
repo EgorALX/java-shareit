@@ -42,7 +42,7 @@ public class ItemServiceImplIntegrationTest {
         itemCreateDto.setDescription("Test Description");
         itemCreateDto.setAvailable(true);
 
-        ItemDto result = itemService.addItem(user.getId(), itemCreateDto);
+        ItemDto result = itemService.addItem(1L, itemCreateDto);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isNotNull();
@@ -70,7 +70,7 @@ public class ItemServiceImplIntegrationTest {
         itemCreateDto.setDescription("Updated Description");
         itemCreateDto.setAvailable(false);
         itemCreateDto.setId(2L);
-        itemCreateDto.setUserId(user.getId());
+        itemCreateDto.setUserId(2L);
         ItemDto updatedResult = itemService.updateItem(itemCreateDto);
 
         assertThat(updatedResult).isNotNull();
