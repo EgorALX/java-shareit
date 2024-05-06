@@ -3,6 +3,7 @@ package ru.practicum.shareit.Item;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.item.dto.ItemCreateDto;
@@ -22,7 +23,7 @@ public class ItemServiceImplIntegrationTest {
     private ItemServiceImpl itemService;
 
     @Autowired
-    private EntityManager entityManager;
+    private TestEntityManager entityManager;
 
     @BeforeEach
     void setUp() {
@@ -34,7 +35,7 @@ public class ItemServiceImplIntegrationTest {
         user.setId(1L);
         user.setName("Test User");
         user.setEmail("test@example.com");
-        entityManager.merge(user);
+        entityManager.persist(user);
         entityManager.flush();
 
         ItemCreateDto itemCreateDto = new ItemCreateDto();
@@ -57,7 +58,7 @@ public class ItemServiceImplIntegrationTest {
         user.setId(2L);
         user.setName("Test User");
         user.setEmail("test@example.com");
-        entityManager.merge(user);
+        entityManager.persist(user);
         entityManager.flush();
 
         ItemCreateDto itemCreateDto = new ItemCreateDto();
