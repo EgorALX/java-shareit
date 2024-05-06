@@ -26,6 +26,12 @@ public class ItemServiceImplIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        User user = new User();
+        user.setId(1L);
+        user.setName("Test User");
+        user.setEmail("test@example.com");
+        entityManager.persist(user);
+        entityManager.flush();
     }
 
     @Test
