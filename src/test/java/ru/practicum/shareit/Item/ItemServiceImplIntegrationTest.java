@@ -34,7 +34,7 @@ public class ItemServiceImplIntegrationTest {
         user.setId(1L);
         user.setName("Test User");
         user.setEmail("test@example.com");
-        entityManager.merge(user);
+        entityManager.persist(user);
         entityManager.flush();
 
         ItemCreateDto itemCreateDto = new ItemCreateDto();
@@ -57,7 +57,7 @@ public class ItemServiceImplIntegrationTest {
         user.setId(2L);
         user.setName("Test User");
         user.setEmail("test@example.com");
-        entityManager.merge(user);
+        entityManager.persist(user);
         entityManager.flush();
 
         ItemCreateDto itemCreateDto = new ItemCreateDto();
