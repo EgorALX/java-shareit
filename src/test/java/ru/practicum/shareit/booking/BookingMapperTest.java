@@ -15,6 +15,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapping.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.model.Request;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapping.UserMapper;
 import ru.practicum.shareit.user.model.User;
@@ -35,11 +36,6 @@ public class BookingMapperTest {
 
     @InjectMocks
     private BookingMapper bookingMapper;
-
-    @BeforeEach
-    void setUp() {
-        // Инициализация моков перед каждым тестом
-    }
 
     @Test
     void toBookingDtoTest() {
@@ -70,8 +66,9 @@ public class BookingMapperTest {
 
     @Test
     void toBookingForItemDtoTest() {
+        Request request = new Request(1L, "req", new User(), LocalDateTime.now());
         Booking booking = new Booking(1L, LocalDateTime.now(), LocalDateTime.now().plusHours(1),
-                new Item(1L, "11", "11", true, 1L, new User()),
+                new Item(1L, "11", "11", true, request, new User()),
                 new User(1L, "name", "ww@mail.ru"), Status.APPROVED);
         BookingForItem expectedDto = new BookingForItem(1L, booking.getStart(), booking.getEnd(),
                 1L, 1L);

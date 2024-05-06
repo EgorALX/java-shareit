@@ -10,6 +10,7 @@ import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.comment.mapper.CommentMapper;
 import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.model.Request;
 import ru.practicum.shareit.user.mapping.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
@@ -29,7 +30,9 @@ public class CommentMapperTest {
 
     @Test
     void toCommentDtoTest() {
-        Comment comment = new Comment(1L, "text", new Item(1L, "11", "11", true, 1L, new User()),
+        Request request = new Request(1L, "req", new User(), LocalDateTime.now());
+        Comment comment = new Comment(1L, "text", new Item(1L, "11", "11",
+                true, request, new User()),
                 new User(1L, "Author", "ww@mail.ru"), LocalDateTime.now());
         CommentDto expectedDto = new CommentDto(1L, "text", "Author", comment.getCreatedDate());
 

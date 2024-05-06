@@ -46,7 +46,6 @@ public class ItemMapperTest {
         assertEquals(itemCreateDto.getName(), item.getName());
         assertEquals(itemCreateDto.getDescription(), item.getDescription());
         assertEquals(itemCreateDto.getAvailable(), item.getAvailable());
-        assertNull(item.getRequestId());
         assertEquals(owner, item.getOwner());
     }
 }

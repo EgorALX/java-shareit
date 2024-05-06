@@ -27,10 +27,10 @@ import ru.practicum.shareit.item.mapping.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
+import ru.practicum.shareit.request.model.Request;
 import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -52,9 +52,6 @@ public class ItemServiceTest {
 
     @Mock
     private UserRepository userRepository;
-
-    @Mock
-    private final UserService userService;
 
     @Mock
     private BookingRepository bookingRepository;
@@ -186,8 +183,9 @@ public class ItemServiceTest {
 
     @Test
     void getUsersItemsTest() {
+        Request request = new Request(1L, "req", new User(), LocalDateTime.now());
         User user = new User(1L, "username", "email@example.com");
-        Item item = new Item(1L, "Item Name", "Item Description", true, 1L, user);
+        Item item = new Item(1L, "Item Name", "Item Description", true, request, user);
         Booking approvedBooking = new Booking(1L, LocalDateTime.now(), LocalDateTime.now().plusDays(1),
                 item, user, Status.APPROVED);
         ItemDto itemDto = new ItemDto();
