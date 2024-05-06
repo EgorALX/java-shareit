@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Add database file patterns
+*.sql
+*.db
