@@ -165,7 +165,7 @@ public class ItemServiceImpl implements ItemService {
     private Booking getLastBooking(List<Booking> itemBookings) {
         return itemBookings.stream()
                 .filter(booking -> booking.getEnd().isBefore(LocalDateTime.now()) ||
-                        (booking.getStart().isBefore(LocalDateTime.now()) && booking.getEnd().isEqual(null)))
+                        (booking.getStart().isBefore(LocalDateTime.now()) && booking.getEnd().equals(null)))
                 .findFirst()
                 .orElse(null);
     }
