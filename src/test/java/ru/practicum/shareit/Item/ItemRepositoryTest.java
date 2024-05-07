@@ -69,11 +69,11 @@ public class ItemRepositoryTest {
     @Test
     void getItemsByRequestIdTest() {
         User user2 = new User("user2", "user1@mail.ru");
-        User notOwner = userRepository.save(user2);
+        userRepository.save(user2);
         User user3 = new User("user3", "user3@mail.ru");
         User owner = userRepository.save(user3);
         Item item2 = new Item("item2", "itemmь", true, owner, null);
-        Item item = itemRepository.save(item2);
+        itemRepository.save(item2);
         Request request2 = new Request(1L, "req", user2, LocalDateTime.now());
         Request request = requestRepository.save(request2);
 

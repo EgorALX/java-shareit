@@ -26,4 +26,10 @@ public class Request {
     private User requester;
 
     private LocalDateTime created;
+
+    public Request(String description, User requester, LocalDateTime created) {
+        this.description = description;
+        this.requester = requester;
+        this.created = created;
+    }
 }

@@ -1,13 +1,11 @@
 package ru.practicum.shareit.request;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -39,27 +37,18 @@ public class RequestRepositoryTest {
     @Autowired
     private RequestRepository requestRepository;
 
-    User user1 = new User(1L, "user1", "user1@yandex.ru");
-
-    User user2 = new User(2L, "user2", "user2@yandex.ru");
-    Item item = new Item(1L, "item1", "itemm", true, user1, null);
-
-    Request request2 = new Request(1L, "req", user1, LocalDateTime.now());
-
-
-    Booking booking = new Booking(1L, LocalDateTime.now(), LocalDateTime.now().plusHours(1), item, user2, Status.APPROVED);
-
-    @BeforeEach
-    void setUp() {
+    @Test
+    void findAllByRequesterIdTest() {
+        User user1 = new User("user1", "user1@yandex.ru");
+        User user2 = new User("user2", "user2@yandex.ru");
+        Item item = new Item("item1", "itemm", true, user1, null);
+        Request request2 = new Request("req", user1, LocalDateTime.now());
+        Booking booking = new Booking(LocalDateTime.now(), LocalDateTime.now().plusHours(1), item, user2, Status.APPROVED);
         userRepository.save(user1);
         userRepository.save(user2);
         itemRepository.save(item);
         bookingRepository.save(booking);
-    }
 
-    @Test
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-    void findAllByRequesterIdTest() {
         User requester = userRepository.save(user1);
         Request request = requestRepository.save(request2);
         Sort sort = Sort.by(Sort.Direction.ASC, "created");
@@ -72,8 +61,13 @@ public class RequestRepositoryTest {
     }
 
     @Test
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
     void findAllByRequesterIdNotTest() {
+        User user1 = new User("user1", "user3@yandex.ru");
+        User user2 = new User("user2", "user4@yandex.ru");
+        Item item = new Item("item12", "itemmь", true, user1, null);
+        Request request2 = new Request("req", user1, LocalDateTime.now());
+        Booking booking = new Booking(LocalDateTime.now(), LocalDateTime.now().plusHours(1), item, user2, Status.APPROVED);
+
         User requester = userRepository.save(user1);
         User otherUser = userRepository.save(user2);
         Request request = requestRepository.save(request2);
