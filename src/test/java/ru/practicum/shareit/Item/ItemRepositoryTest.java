@@ -33,14 +33,13 @@ public class ItemRepositoryTest {
     RequestRepository requestRepository;
 
     User user1 = new User(1L, "user1", "user1@mail.ru");
-    Item item1 = new Item(1L, "item1", "itemm", true, user1, null);
-
-    Request request2 = new Request(1L, "req", user1, LocalDateTime.now());
 
     @Test
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
     void findItemByOwnerIdTest() {
-        User owner = userRepository.save(user1);
+        User user2 = new User("user5", "user5@mail.ru");
+        User user = userRepository.save(user2);
+        Item item1 = new Item(1L, "item1", "itemm", true, user, null);
+        User owner = userRepository.save(user);
         Item item = itemRepository.save(item1);
         Pageable pageable = PageRequest.of(0, 10);
 
@@ -53,8 +52,9 @@ public class ItemRepositoryTest {
     }
 
     @Test
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
     void searchTest() {
+        User user1 = new User(1L, "user1", "user1@mail.ru");
+        Item item1 = new Item(1L, "item1", "itemm", true, user1, null);
         User user = userRepository.save(user1);
         Item item = itemRepository.save(item1);
         Pageable pageable = PageRequest.of(0, 10);
@@ -68,11 +68,16 @@ public class ItemRepositoryTest {
     }
 
     @Test
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
     void getItemsByRequestIdTest() {
-        User owner = userRepository.save(user1);
+        User user2 = new User("user2", "user1@mail.ru");
+        User notOwner = userRepository.save(user2);
+        User user3 = new User("user3", "user3@mail.ru");
+        User owner = userRepository.save(user3);
+        Item item2 = new Item("item2", "itemmь", true, owner, null);
+        Item item = itemRepository.save(item2);
+        Request request2 = new Request(1L, "req", user2, LocalDateTime.now());
         Request request = requestRepository.save(request2);
-        Item item = itemRepository.save(item1);
+
         Sort sort = Sort.by(Sort.Direction.ASC, "name");
 
         List<Item> items = itemRepository.getItemsByRequestId(request.getId(), sort);

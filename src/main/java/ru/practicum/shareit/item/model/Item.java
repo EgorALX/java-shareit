@@ -40,4 +40,12 @@ public class Item {
         this.request = request;
         this.owner = owner;
     }
+
+    public Item(String name, String description, Boolean available, User owner, Request request) {
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.owner = owner;
+        this.request = request;
+    }
 }
