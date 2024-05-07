@@ -52,8 +52,8 @@ public class ItemRepositoryTest {
 
     @Test
     void searchTest() {
-        User user1 = new User(1L, "user1", "user1@mail.ru");
-        Item item1 = new Item(1L, "item1", "itemm", true, user1, null);
+        User user1 = new User("user1", "user1@mail.ru");
+        Item item1 = new Item("item1", "itemm", true, user1, null);
         User user = userRepository.save(user1);
         Item item = itemRepository.save(item1);
         Pageable pageable = PageRequest.of(0, 10);
@@ -73,7 +73,7 @@ public class ItemRepositoryTest {
         User user3 = new User("user3", "user3@mail.ru");
         User owner = userRepository.save(user3);
         Item item2 = new Item("item2", "itemmь", true, owner, null);
-        itemRepository.save(item2);
+        Item item = itemRepository.save(item2);
         Request request2 = new Request(1L, "req", user2, LocalDateTime.now());
         Request request = requestRepository.save(request2);
 
