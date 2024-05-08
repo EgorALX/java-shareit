@@ -42,4 +42,12 @@ public class Booking {
         this.start = start;
         this.end = end;
     }
+
+    public Booking(LocalDateTime start, LocalDateTime end, Item item, User booker, Status status) {
+        this.start = start;
+        this.end = end;
+        this.item = item;
+        this.booker = booker;
+        this.status = status;
+    }
 }

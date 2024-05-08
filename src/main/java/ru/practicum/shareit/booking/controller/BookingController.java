@@ -2,6 +2,9 @@ package ru.practicum.shareit.booking.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -9,7 +12,10 @@ import ru.practicum.shareit.booking.enums.State;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import java.util.List;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Slf4j
 @RestController
@@ -22,7 +28,7 @@ public class BookingController {
     private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
-    public BookingDto create(@RequestHeader(USER_ID_HEADER) Long userId,
+    public BookingDto create(@RequestHeader(USER_ID_HEADER) long userId,
                              @Valid @RequestBody BookingCreateDto bookingCreateDto) {
         log.info("Creating a new booking for userId: {}", userId);
         BookingDto result = bookingService.create(userId, bookingCreateDto);
@@ -31,9 +37,9 @@ public class BookingController {
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDto update(@PathVariable Long bookingId,
-                             @RequestHeader(USER_ID_HEADER) Long userId,
-                             @RequestParam Boolean approved) {
+    public BookingDto update(@PathVariable long bookingId,
+                             @RequestHeader(USER_ID_HEADER) long userId,
+                             @RequestParam boolean approved) {
         log.info("Updating booking with id: {} for userId: {}", bookingId, userId);
         BookingDto result = bookingService.update(bookingId, userId, approved);
         log.info("Booking updated successfully with id: {} for userId: {}", bookingId, userId);
@@ -41,8 +47,8 @@ public class BookingController {
     }
 
     @GetMapping("/{bookingId}")
-    public BookingDto getById(@PathVariable Long bookingId,
-                              @RequestHeader(USER_ID_HEADER) Long userId) {
+    public BookingDto getById(@PathVariable long bookingId,
+                              @RequestHeader(USER_ID_HEADER) long userId) {
         log.info("Getting booking by id: {} for userId: {}", bookingId, userId);
         BookingDto result = bookingService.getById(bookingId, userId);
         log.info("Booking retrieved successfully by id: {} for userId: {}", bookingId, userId);
@@ -50,19 +56,30 @@ public class BookingController {
     }
 
     @GetMapping("/owner")
-    public List<BookingDto> getBooking(@RequestHeader(USER_ID_HEADER) Long userId,
-                                       @RequestParam(defaultValue = "ALL") String state) {
+    public List<BookingDto> getBookingByOwner(@RequestHeader(USER_ID_HEADER) long userId,
+                                              @RequestParam(defaultValue = "ALL") String state,
+                                              @RequestParam(defaultValue = "0") int from,
+                                              @RequestParam(defaultValue = "10") int size) {
         log.info("Getting bookings by owner for userId: {} with state: {}", userId, state);
-        List<BookingDto> result = bookingService.getBookingsByOwner(userId, State.convertStateStringToEnum(state));
+        Pageable pageable = PageRequest.of(from, size, Sort.by(DESC, "start"));
+        List<BookingDto> result = bookingService.getBookingsByOwner(userId,
+                State.stateValueOf(state), pageable);
         log.info("Bookings retrieved successfully by owner for userId: {} with state: {}", userId, state);
         return result;
     }
 
     @GetMapping
-    public List<BookingDto> getBookingsByUser(@RequestHeader(USER_ID_HEADER) Long userId,
-                                              @RequestParam(defaultValue = "ALL") String state) {
+    public List<BookingDto> getBookingsByUser(@RequestHeader(USER_ID_HEADER) long userId,
+                                              @RequestParam(defaultValue = "ALL") String state,
+                                              @RequestParam(defaultValue = "0") int from,
+                                              @RequestParam(defaultValue = "10") int size) {
+        if (from < 0) {
+            throw new ValidationException();
+        }
         log.info("Getting bookings by user for userId: {} with state: {}", userId, state);
-        List<BookingDto> result = bookingService.getBookingsByUser(userId, State.convertStateStringToEnum(state));
+        Pageable pageable = PageRequest.of((from / size), size, Sort.by(DESC, "start"));
+        List<BookingDto> result = bookingService
+                .getBookingsByUser(userId, State.stateValueOf(state), pageable);
         log.info("Bookings retrieved successfully by user for userId: {} with state: {}", userId, state);
         return result;
     }

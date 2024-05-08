@@ -2,6 +2,8 @@ package ru.practicum.shareit.item.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.comment.dto.CommentCreateDto;
@@ -25,7 +27,7 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto addItem(@RequestHeader(USER_ID_HEADER) Long userId, @Valid @RequestBody ItemCreateDto item) {
+    public ItemDto addItem(@RequestHeader(USER_ID_HEADER) long userId, @Valid @RequestBody ItemCreateDto item) {
         log.info("Adding item for user with id: {}", userId);
         ItemDto addedItemDto = itemService.addItem(userId, item);
         log.info("Item added with id: {}", addedItemDto.getId());
@@ -33,7 +35,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader(USER_ID_HEADER) Long userId,
+    public ItemDto updateItem(@RequestHeader(USER_ID_HEADER) long userId,
                               @PathVariable Long itemId,
                               @RequestBody ItemCreateDto item) {
         log.info("Updating item with id: {}", itemId);
@@ -54,30 +56,37 @@ public class ItemController {
 
     @DeleteMapping("/{itemId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeById(@RequestHeader(USER_ID_HEADER) Long userId, @PathVariable Long itemId) {
+    public void removeById(@RequestHeader(USER_ID_HEADER) long userId, @PathVariable Long itemId) {
         log.info("Removing item with id: {}", itemId);
         itemService.removeById(userId, itemId);
         log.info("Item removed with id: {}", itemId);
     }
 
     @GetMapping
-    public List<ItemDto> getUsersItems(@RequestHeader(USER_ID_HEADER) Long userId) {
+    public List<ItemDto> getUsersItems(@RequestHeader(USER_ID_HEADER) long userId,
+                                       @RequestParam(defaultValue = "0") Integer page,
+                                       @RequestParam(defaultValue = "10") Integer size) {
         log.info("Getting items for user with id: {}", userId);
-        List<ItemDto> itemDtos = itemService.getUsersItems(userId);
+        Pageable pageable = PageRequest.of(page, size);
+        List<ItemDto> itemDtos = itemService.getUsersItems(userId, pageable);
         log.info("Found {} items for user with id: {}", itemDtos.size(), userId);
         return itemDtos;
     }
 
+
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestParam String text) {
+    public List<ItemDto> search(@RequestParam String text,
+                                @RequestParam(defaultValue = "0") Integer page,
+                                @RequestParam(defaultValue = "10") Integer size) {
         log.info("Searching items with text: {}", text);
-        List<ItemDto> itemDtos = itemService.search(text);
+        Pageable pageable = PageRequest.of(page, size);
+        List<ItemDto> itemDtos = itemService.search(text, pageable);
         log.info("Found {} items matching the search text", itemDtos.size());
         return itemDtos;
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto addComment(@RequestHeader(USER_ID_HEADER) Long userId,
+    public CommentDto addComment(@RequestHeader(USER_ID_HEADER) long userId,
                                  @Valid @RequestBody CommentCreateDto comment,
                                  @PathVariable Long itemId) {
         return itemService.addComment(itemId, userId, comment);
