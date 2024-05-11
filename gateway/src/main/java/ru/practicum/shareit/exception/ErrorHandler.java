@@ -18,7 +18,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDto handleValidationException(final IllegalArgumentException  exception) {
         log.info("Ошибка валидации {}", exception.getMessage());
-        String message = "DataIntegrityViolation error: " + exception.getMessage();
+        String message = exception.getMessage();
         return new ErrorDto(message);
     }
 

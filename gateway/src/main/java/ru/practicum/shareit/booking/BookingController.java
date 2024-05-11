@@ -45,14 +45,14 @@ public class BookingController {
 	}
 
 	@GetMapping("/{bookingId}")
-	public ResponseEntity<Object> getBooking(@RequestHeader("X-Sharer-User-Id") long userId,
+	public ResponseEntity<Object> getById(@RequestHeader("X-Sharer-User-Id") long userId,
 			@PathVariable Long bookingId) {
 		log.info("Get booking {}, userId={}", bookingId, userId);
-		return bookingClient.getBooking(userId, bookingId);
+		return bookingClient.getById(userId, bookingId);
 	}
 
 	@GetMapping("/owner")
-	public ResponseEntity<Object> getAllByOwner(@RequestHeader(USER_ID_HEADER) long userId,
+	public ResponseEntity<Object> getBookingByOwner(@RequestHeader(USER_ID_HEADER) long userId,
 												@RequestParam(name = "state", defaultValue = "all") String stateParam,
 												@RequestParam(defaultValue = "0") @Min(0) int from,
 												@RequestParam(defaultValue = "10") @Min(1) int size) {
