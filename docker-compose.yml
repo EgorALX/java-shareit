@@ -30,6 +30,6 @@ services:
     ports:
       - "6541:5432"
     environment:
-      POSTGRES_PASSWORD: shareitpass
-      POSTGRES_USER: shareit_user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_USER: user
       POSTGRES_DB: shareit
