@@ -71,7 +71,7 @@ public class ItemController {
         Pageable pageable = PageRequest.of(page, size);
         List<ItemDto> itemDtos = itemService.getUsersItems(userId, pageable);
         log.info("Found {} items for user with id: {}", itemDtos.size(), userId);
-        itemDtos.sort(Comparator.comparing(ItemDto::getId));
+        itemDtos.stream().sorted(Comparator.comparing(ItemDto::getId));
         return itemDtos;
     }
 
