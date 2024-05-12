@@ -159,6 +159,7 @@ public class ItemServiceImpl implements ItemService {
             itemDto.setComments(commentsByItemId.getOrDefault(item.getId(), Collections.emptyList()));
             itemDtoList.add(itemDto);
         }
+        itemDtoList = itemDtoList.stream().sorted(Comparator.comparing(ItemDto::getId)).collect(Collectors.toList());
         return itemDtoList;
     }
 

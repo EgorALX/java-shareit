@@ -71,11 +71,9 @@ public class ItemController {
         log.info("Getting items for user with id: {}", userId);
         Pageable pageable = PageRequest.of(from, size);
         List<ItemDto> itemDtos = itemService.getUsersItems(userId, pageable);
-        itemDtos = itemDtos.stream().sorted(Comparator.comparing(ItemDto::getId)).collect(Collectors.toList());
         log.info("Found {} items for user with id: {}", itemDtos.size(), userId);
         return itemDtos;
     }
-
 
     @GetMapping("/search")
     public List<ItemDto> search(@RequestParam String text,
