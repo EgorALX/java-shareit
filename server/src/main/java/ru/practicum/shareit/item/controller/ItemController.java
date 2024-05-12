@@ -13,6 +13,7 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.Valid;
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -70,6 +71,7 @@ public class ItemController {
         Pageable pageable = PageRequest.of(page, size);
         List<ItemDto> itemDtos = itemService.getUsersItems(userId, pageable);
         log.info("Found {} items for user with id: {}", itemDtos.size(), userId);
+        itemDtos.sort(Comparator.comparing(ItemDto::getId));
         return itemDtos;
     }
 
