@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,10 +29,10 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<Object> get(@PathVariable long itemId,
-                                      @RequestHeader(USER_ID_HEADER) long userId) {
+    public ResponseEntity<Object> getById(@PathVariable long itemId,
+                                          @RequestHeader(USER_ID_HEADER) long userId) {
         log.info("Get item with id {} from user with id {}", itemId, userId);
-        return itemClient.get(itemId, userId);
+        return itemClient.getById(itemId, userId);
     }
 
     @GetMapping
@@ -53,25 +54,25 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@Valid @RequestBody ItemDto itemDto,
-                                         @RequestHeader(USER_ID_HEADER) long userId) {
+    public ResponseEntity<Object> addItem(@Valid @RequestBody ItemDto itemDto,
+                                          @RequestHeader(USER_ID_HEADER) long userId) {
         log.info("Create item {} by user with id {}", itemDto, userId);
-        return itemClient.create(itemDto, userId);
+        return itemClient.addItem(itemDto, userId);
     }
 
     @PatchMapping("/{itemId}")
-    public ResponseEntity<Object> update(@RequestBody ItemDto itemDto,
-                                         @RequestHeader(USER_ID_HEADER) long userId,
-                                         @PathVariable long itemId) {
+    public ResponseEntity<Object> updateItem(@RequestBody ItemDto itemDto,
+                                             @RequestHeader(USER_ID_HEADER) long userId,
+                                             @PathVariable long itemId) {
         log.info("Update item {} by user with id {}", itemDto, userId);
-        return itemClient.update(itemDto, userId, itemId);
+        return itemClient.updateItem(itemDto, userId, itemId);
     }
 
     @PostMapping("/{itemId}/comment")
-    public ResponseEntity<Object> comment(@Valid @RequestBody CommentDto commentCreateDto,
+    public ResponseEntity<Object> addComment(@Valid @RequestBody CommentDto commentCreateDto,
                                           @RequestHeader(USER_ID_HEADER) long userId,
                                           @PathVariable long itemId) {
         log.info("Comment to item with id {} by user with id {}", itemId, userId);
-        return itemClient.comment(commentCreateDto, userId, itemId);
+        return itemClient.addComment(commentCreateDto, userId, itemId);
     }
 }

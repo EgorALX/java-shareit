@@ -27,10 +27,10 @@ public class RequestController {
     }
 
     @GetMapping("/{requestId}")
-    public ResponseEntity<Object> get(@RequestHeader(USER_ID_HEADER) long userId,
-                                      @PathVariable long requestId) {
+    public ResponseEntity<Object> getById(@RequestHeader(USER_ID_HEADER) long userId,
+                                          @PathVariable long requestId) {
         log.info("Get request with {} by user with id {}", requestId, userId);
-        return requestClient.get(userId, requestId);
+        return requestClient.getById(userId, requestId);
     }
 
     @PostMapping
@@ -41,9 +41,9 @@ public class RequestController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getAllOwn(@RequestHeader(USER_ID_HEADER) long userId) {
+    public ResponseEntity<Object> getByOwner(@RequestHeader(USER_ID_HEADER) long userId) {
         log.info("Get requests of user with id {}", userId);
-        return requestClient.getAllOwn(userId);
+        return requestClient.getByOwner(userId);
     }
 
     @GetMapping("/all")

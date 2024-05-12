@@ -29,28 +29,28 @@ public class ItemRequestController {
     @PostMapping
     public ItemRequestDto create(@RequestHeader(USER_ID_HEADER) long userId,
                                  @Valid @RequestBody ItemRequestCreateDto itemRequestDto) {
-        log.info("Creating a new request for userId: {}", userId);
+        log.info("Creating request by userId: {}", userId);
         itemRequestDto.setCreated(LocalDateTime.now());
         itemRequestDto.setRequesterId(userId);
         ItemRequestDto result = service.create(itemRequestDto);
-        log.info("Request created successfully for userId: {}", userId);
+        log.info("Request created successfully by userId: {}", userId);
         return result;
     }
 
     @GetMapping("/{requestId}")
     public ItemRequestDto getById(@RequestHeader("X-Sharer-User-Id") long userId,
                                   @PathVariable("requestId") Long requestId) {
-        log.info("Getting request by id: {} for userId: {}", requestId, userId);
+        log.info("Getting request with id: {} with userId: {}", requestId, userId);
         ItemRequestDto result = service.getById(userId, requestId);
-        log.info("Request retrieved successfully by id: {} for userId: {}", requestId, userId);
+        log.info("Request retrieved successfully with id: {} for userId: {}", requestId, userId);
         return result;
     }
 
     @GetMapping
     public List<ItemRequestDto> getByOwner(@RequestHeader(USER_ID_HEADER) long userId) {
-        log.info("Getting requests by owner for userId: {}", userId);
+        log.info("Getting requests by owner with userId: {}", userId);
         List<ItemRequestDto> result = service.getByOwner(userId);
-        log.info("Requests retrieved successfully by owner for userId: {}", userId);
+        log.info("Requests retrieved successfully by owner with userId: {}", userId);
         return result;
     }
 

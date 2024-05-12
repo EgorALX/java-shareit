@@ -26,7 +26,7 @@ public class RequestClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> get(long userId, long requestId) {
+    public ResponseEntity<Object> getById(long userId, long requestId) {
         return get("/" + requestId, userId);
     }
 
@@ -34,7 +34,7 @@ public class RequestClient extends BaseClient {
         return post("", userId, itemRequestCreateDto);
     }
 
-    public ResponseEntity<Object> getAllOwn(long userId) {
+    public ResponseEntity<Object> getByOwner(long userId) {
         return get("", userId);
     }
 

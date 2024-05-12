@@ -17,7 +17,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDto handleValidationException(final IllegalArgumentException  exception) {
-        log.info("Ошибка валидации {}", exception.getMessage());
+        log.info("Validation exception {}", exception.getMessage());
         String message = exception.getMessage();
         return new ErrorDto(message);
     }
@@ -27,7 +27,6 @@ public class ErrorHandler {
     public ErrorDto handleException(final Exception exception) {
         StringWriter error = new StringWriter();
         exception.printStackTrace(new PrintWriter(error));
-        String message = "Exception: " + exception.getMessage() + " StackTrace: " + error.toString();
         log.error("Exception: ", exception);
         return new ErrorDto(exception.getMessage(), error.toString());
     }
