@@ -64,8 +64,8 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> getUsersItems(@RequestHeader(USER_ID_HEADER) long userId,
-                                       @RequestParam(defaultValue = "0") Integer page,
-                                       @RequestParam(defaultValue = "10") Integer size) {
+                                       @RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "10") int size) {
         log.info("Getting items for user with id: {}", userId);
         Pageable pageable = PageRequest.of(page, size);
         List<ItemDto> itemDtos = itemService.getUsersItems(userId, pageable);

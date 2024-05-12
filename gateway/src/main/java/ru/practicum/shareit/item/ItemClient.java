@@ -32,7 +32,7 @@ public class ItemClient extends BaseClient {
         return get("/" + itemId, userId);
     }
 
-    public ResponseEntity<Object> getAllOwn(long userId, int from, int size) {
+    public ResponseEntity<Object> getUsersItems(long userId, int from, int size) {
         Map<String, Object> parameters = Map.of(
                 "from", from,
                 "size", size

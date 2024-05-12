@@ -35,12 +35,12 @@ public class ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getAllOwn(@RequestHeader(USER_ID_HEADER) long userId,
+    public ResponseEntity<Object> getUsersItems(@RequestHeader(USER_ID_HEADER) long userId,
                                             @RequestParam(defaultValue = "0") @Min(0) int from,
                                             @RequestParam(defaultValue = "10") @Min(1) int size) {
         log.info("Get list of items owned by user with с id {}," +
                 " beginning from {}, by {} items on page", userId, from, size);
-        return itemClient.getAllOwn(userId, from, size);
+        return itemClient.getUsersItems(userId, from, size);
     }
 
     @GetMapping("/search")
