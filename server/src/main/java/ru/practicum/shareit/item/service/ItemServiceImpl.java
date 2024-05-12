@@ -144,7 +144,7 @@ public class ItemServiceImpl implements ItemService {
                                 .collect(Collectors.toList())
                 ));
 
-        List<ItemDto> itemDtoList = new ArrayList<>();
+        List<ItemDto> itemDtoList = new LinkedList<>();
         for (Item item : items) {
             List<Booking> itemBookings = bookingsByItemId.getOrDefault(item.getId(), Collections.emptyList());
             Booking lastBooking = getLastBooking(itemBookings);
@@ -159,9 +159,6 @@ public class ItemServiceImpl implements ItemService {
             itemDto.setComments(commentsByItemId.getOrDefault(item.getId(), Collections.emptyList()));
             itemDtoList.add(itemDto);
         }
-
-        Collections.reverse(itemDtoList);
-
         return itemDtoList;
     }
 
