@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.comment.dto.CommentCreateDto;
@@ -13,6 +14,7 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -68,10 +70,9 @@ public class ItemController {
                                        @RequestParam(defaultValue = "0") Integer page,
                                        @RequestParam(defaultValue = "10") Integer size) {
         log.info("Getting items for user with id: {}", userId);
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         List<ItemDto> itemDtos = itemService.getUsersItems(userId, pageable);
         log.info("Found {} items for user with id: {}", itemDtos.size(), userId);
-        itemDtos.stream().sorted(Comparator.comparing(ItemDto::getId).reversed());
         return itemDtos;
     }
 
