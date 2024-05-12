@@ -68,7 +68,7 @@ public class ItemController {
                                        @RequestParam(defaultValue = "0") Integer page,
                                        @RequestParam(defaultValue = "10") Integer size) {
         log.info("Getting items for user with id: {}", userId);
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(page, size);
         List<ItemDto> itemDtos = itemService.getUsersItems(userId, pageable);
         log.info("Found {} items for user with id: {}", itemDtos.size(), userId);
         return itemDtos;
