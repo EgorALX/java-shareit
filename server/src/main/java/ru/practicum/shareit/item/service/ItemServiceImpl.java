@@ -144,7 +144,7 @@ public class ItemServiceImpl implements ItemService {
                                 .collect(Collectors.toList())
                 ));
 
-        List<ItemDto> itemDtoList = new LinkedList<>();
+        List<ItemDto> itemDtoList = new ArrayList<>();
         for (Item item : items) {
             List<Booking> itemBookings = bookingsByItemId.getOrDefault(item.getId(), Collections.emptyList());
             Booking lastBooking = getLastBooking(itemBookings);

@@ -13,7 +13,9 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.Valid;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -64,11 +66,12 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> getUsersItems(@RequestHeader(USER_ID_HEADER) long userId,
-                                       @RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "0") int from,
                                        @RequestParam(defaultValue = "10") int size) {
         log.info("Getting items for user with id: {}", userId);
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(from, size);
         List<ItemDto> itemDtos = itemService.getUsersItems(userId, pageable);
+        itemDtos = itemDtos.stream().sorted(Comparator.comparing(ItemDto::getId)).collect(Collectors.toList());
         log.info("Found {} items for user with id: {}", itemDtos.size(), userId);
         return itemDtos;
     }
