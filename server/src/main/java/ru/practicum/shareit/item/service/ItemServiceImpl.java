@@ -159,6 +159,9 @@ public class ItemServiceImpl implements ItemService {
             itemDto.setComments(commentsByItemId.getOrDefault(item.getId(), Collections.emptyList()));
             itemDtoList.add(itemDto);
         }
+
+        Collections.reverse(itemDtoList);
+
         return itemDtoList;
     }
 
