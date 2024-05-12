@@ -2,7 +2,6 @@ package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +36,8 @@ public class ItemController {
 
     @GetMapping
     public ResponseEntity<Object> getUsersItems(@RequestHeader(USER_ID_HEADER) long userId,
-                                            @RequestParam(defaultValue = "0") @Min(0) int from,
-                                            @RequestParam(defaultValue = "10") @Min(1) int size) {
+                                                @RequestParam(defaultValue = "0") @Min(0) int from,
+                                                @RequestParam(defaultValue = "10") @Min(1) int size) {
         log.info("Get list of items owned by user with с id {}," +
                 " beginning from {}, by {} items on page", userId, from, size);
         return itemClient.getUsersItems(userId, from, size);
@@ -70,8 +69,8 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> addComment(@Valid @RequestBody CommentDto commentCreateDto,
-                                          @RequestHeader(USER_ID_HEADER) long userId,
-                                          @PathVariable long itemId) {
+                                             @RequestHeader(USER_ID_HEADER) long userId,
+                                             @PathVariable long itemId) {
         log.info("Comment to item with id {} by user with id {}", itemId, userId);
         return itemClient.addComment(commentCreateDto, userId, itemId);
     }
