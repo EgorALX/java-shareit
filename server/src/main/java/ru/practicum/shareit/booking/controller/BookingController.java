@@ -58,8 +58,8 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDto> getBookingByOwner(@RequestHeader(USER_ID_HEADER) long userId,
                                               @RequestParam(defaultValue = "ALL") String state,
-                                               int from,
-                                               int size) {
+                                              @RequestParam int from,
+                                              @RequestParam int size) {
         log.info("Getting bookings by owner for userId: {} with state: {}", userId, state);
         Pageable pageable = PageRequest.of(from, size, Sort.by(DESC, "start"));
         List<BookingDto> result = bookingService.getBookingsByOwner(userId,
@@ -71,8 +71,8 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> getBookingsByUser(@RequestHeader(USER_ID_HEADER) long userId,
                                               @RequestParam(defaultValue = "ALL") String state,
-                                              @RequestParam(defaultValue = "0") int from,
-                                              @RequestParam(defaultValue = "10") int size) {
+                                              @RequestParam int from,
+                                              @RequestParam int size) {
         if (from < 0) {
             throw new ValidationException();
         }
