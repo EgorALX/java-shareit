@@ -17,11 +17,9 @@ public class BookingCreateDto {
     private Long id;
 
     @NotNull
-    @FutureOrPresent
     private LocalDateTime start;
 
     @NotNull
-    @Future
     private LocalDateTime end;
 
     @NotNull
