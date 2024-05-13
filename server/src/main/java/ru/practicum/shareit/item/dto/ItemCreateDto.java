@@ -14,14 +14,10 @@ public class ItemCreateDto {
 
     private Long id;
 
-    @NotNull
-    @NotBlank
     private String name;
 
-    @NotNull
     private String description;
 
-    @NotNull
     private Boolean available;
 
     private Long userId;
