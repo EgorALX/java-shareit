@@ -11,7 +11,6 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.enums.State;
 import ru.practicum.shareit.booking.service.BookingService;
 
-import javax.validation.Valid;
 import javax.validation.ValidationException;
 import java.util.List;
 
