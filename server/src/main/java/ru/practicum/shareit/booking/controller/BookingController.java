@@ -71,8 +71,8 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> getBookingsByUser(@RequestHeader(USER_ID_HEADER) long userId,
                                               @RequestParam(defaultValue = "ALL") String state,
-                                               int from,
-                                               int size) {
+                                              @RequestParam(defaultValue = "0") int from,
+                                              @RequestParam(defaultValue = "10") int size) {
         if (from < 0) {
             throw new ValidationException();
         }
