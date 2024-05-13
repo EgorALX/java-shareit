@@ -11,6 +11,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.enums.State;
 import ru.practicum.shareit.booking.service.BookingService;
 
+import javax.validation.Valid;
 import javax.validation.ValidationException;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class BookingController {
 
     @PostMapping
     public BookingDto create(@RequestHeader(USER_ID_HEADER) long userId,
-                             @RequestBody BookingCreateDto bookingCreateDto) {
+                             @Valid @RequestBody BookingCreateDto bookingCreateDto) {
         log.info("Creating a new booking for userId: {}", userId);
         BookingDto result = bookingService.create(userId, bookingCreateDto);
         log.info("Booking created successfully for userId: {}", userId);
@@ -57,8 +58,8 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDto> getBookingByOwner(@RequestHeader(USER_ID_HEADER) long userId,
                                               @RequestParam(defaultValue = "ALL") String state,
-                                              @RequestParam(defaultValue = "0") int from,
-                                              @RequestParam(defaultValue = "10") int size) {
+                                              @RequestParam() int from,
+                                              @RequestParam() int size) {
         log.info("Getting bookings by owner for userId: {} with state: {}", userId, state);
         Pageable pageable = PageRequest.of(from, size, Sort.by(DESC, "start"));
         List<BookingDto> result = bookingService.getBookingsByOwner(userId,
@@ -71,7 +72,7 @@ public class BookingController {
     public List<BookingDto> getBookingsByUser(@RequestHeader(USER_ID_HEADER) long userId,
                                               @RequestParam(defaultValue = "ALL") String state,
                                               @RequestParam(defaultValue = "0") int from,
-                                              @RequestParam() int size) {
+                                              @RequestParam(defaultValue = "10") int size) {
         if (from < 0) {
             throw new ValidationException();
         }
