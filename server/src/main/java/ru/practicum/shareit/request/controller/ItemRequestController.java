@@ -10,7 +10,6 @@ import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.RequestService;
 
-import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class ItemRequestController {
 
     @PostMapping
     public ItemRequestDto create(@RequestHeader(USER_ID_HEADER) long userId,
-                                 @Valid @RequestBody ItemRequestCreateDto itemRequestDto) {
+                                 @RequestBody ItemRequestCreateDto itemRequestDto) {
         log.info("Creating request by userId: {}", userId);
         itemRequestDto.setCreated(LocalDateTime.now());
         itemRequestDto.setRequesterId(userId);

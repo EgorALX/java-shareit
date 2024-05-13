@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,7 +13,6 @@ public class ItemRequestCreateDto {
 
     private Long id;
 
-    @NotNull
     private String description;
 
     private long requesterId;
