@@ -11,8 +11,6 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.enums.State;
 import ru.practicum.shareit.booking.service.BookingService;
 
-import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -29,7 +27,7 @@ public class BookingController {
 
     @PostMapping
     public BookingDto create(@RequestHeader(USER_ID_HEADER) long userId,
-                             @Valid @RequestBody BookingCreateDto bookingCreateDto) {
+                             @RequestBody BookingCreateDto bookingCreateDto) {
         log.info("Creating a new booking for userId: {}", userId);
         BookingDto result = bookingService.create(userId, bookingCreateDto);
         log.info("Booking created successfully for userId: {}", userId);
@@ -73,9 +71,6 @@ public class BookingController {
                                               @RequestParam(defaultValue = "ALL") String state,
                                               @RequestParam(defaultValue = "0") int from,
                                               @RequestParam(defaultValue = "10") int size) {
-        if (from < 0) {
-            throw new ValidationException();
-        }
         log.info("Getting bookings by user for userId: {} with state: {}", userId, state);
         Pageable pageable = PageRequest.of((from / size), size, Sort.by(DESC, "start"));
         List<BookingDto> result = bookingService

@@ -9,7 +9,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserUpdateDto;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -22,7 +21,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto addUser(@Valid @RequestBody UserCreateDto userCreateDto) {
+    public UserDto addUser(@RequestBody UserCreateDto userCreateDto) {
         log.info("Adding user with email:  {}", userCreateDto.getEmail());
         UserDto addedUserDto = userService.addUser(userCreateDto);
         log.info("User added with id: {}", addedUserDto.getId());
@@ -30,7 +29,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserDto updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateDto userUpdateDto) {
+    public UserDto updateUser(@PathVariable Long id, @RequestBody UserUpdateDto userUpdateDto) {
         log.info("Updating user with id: {}", id);
         UserDto updatedUserDto = userService.updateUser(id, userUpdateDto);
         log.info("User updated with id: {}", updatedUserDto.getId());
