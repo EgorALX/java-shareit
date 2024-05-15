@@ -11,7 +11,6 @@ import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -64,11 +63,8 @@ public class BookingController {
 	@GetMapping
 	public ResponseEntity<Object> getBookingsByUser(@RequestHeader("X-Sharer-User-Id") long userId,
 													@RequestParam(name = "state", defaultValue = "all") String stateParam,
-													@PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-													@Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-		if (from < 0) {
-			throw new ValidationException();
-		}
+													@PositiveOrZero @RequestParam(name = "from", defaultValue = "0") @Min(0) int from,
+													@Positive @RequestParam(name = "size", defaultValue = "10") int size) {
 		BookingState state = BookingState.from(stateParam)
 				.orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
 		log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);

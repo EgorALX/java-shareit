@@ -17,16 +17,19 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class BookItemRequestDto {
 
-	private long itemId;
+    private long itemId;
 
-	@FutureOrPresent
-	private LocalDateTime start;
+    @FutureOrPresent
+    private LocalDateTime start;
 
-	@Future
-	private LocalDateTime end;
+    @Future
+    private LocalDateTime end;
 
-	@AssertTrue(message = "Time validation error")
-	private boolean isTimeValid() {
-		return !(start.equals(end) || end.isBefore(start));
-	}
+    @AssertTrue(message = "Time validation error")
+    private boolean isTimeValid() {
+        if (start == null || end == null) {
+            return false;
+        }
+        return !(start.equals(end) || end.isBefore(start));
+    }
 }
